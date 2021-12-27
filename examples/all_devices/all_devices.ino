@@ -3,19 +3,20 @@
 #include <ESP8266WiFi.h>
 #include <LittleFS.h>
 
-#include "esp8266_device_framework.h"       // Required by the ESP compiler framework.
-
-#include "grmcdorman/device/ConfigFile.h"
-
-#include "grmcdorman/device/InfoDisplay.h"
-#include "grmcdorman/device/MqttPublisher.h"
-#include "grmcdorman/device/Sht31Sensor.h"
-#include "grmcdorman/device/SystemDetailsDisplay.h"
-#include "grmcdorman/device/VindriktningAirQuality.h"
-#include "grmcdorman/device/WifiDisplay.h"
-#include "grmcdorman/device/WifiSetup.h"
-
 #include <esp8266_web_settings.h>
+
+#include <esp8266_device_framework.h>       // Required by the ESP compiler framework.
+
+#include <grmcdorman/device/ConfigFile.h>
+
+#include <grmcdorman/device/InfoDisplay.h>
+#include <grmcdorman/device/MqttPublisher.h>
+#include <grmcdorman/device/Sht31Sensor.h>
+#include <grmcdorman/device/SystemDetailsDisplay.h>
+#include <grmcdorman/device/VindriktningAirQuality.h>
+#include <grmcdorman/device/WifiDisplay.h>
+#include <grmcdorman/device/WifiSetup.h>
+
 
 // Global constant strings.
 static const char firmware_name[] PROGMEM = "esp8266-vindriktning-particle-sensor";

@@ -48,6 +48,7 @@ jobs:
             - name: ArduinoJson
             - source-url: https://github.com/me-no-dev/ESPAsyncWebServer.git
             - source-url: https://github.com/me-no-dev/ESPAsyncTCP.git
+            - source-url: https://github.com/grmcdorman/esp8266_web_settings.git
           sketch-paths: |
             # Compile these sketches for all boards
             - examples
