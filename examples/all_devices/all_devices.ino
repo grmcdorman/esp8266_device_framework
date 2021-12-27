@@ -3,6 +3,8 @@
 #include <ESP8266WiFi.h>
 #include <LittleFS.h>
 
+#include "esp8266_device_framework.h"       // Required by the ESP compiler framework.
+
 #include "grmcdorman/device/ConfigFile.h"
 
 #include "grmcdorman/device/InfoDisplay.h"
