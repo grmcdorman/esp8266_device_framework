@@ -3,7 +3,7 @@
 namespace grmcdorman::device
 {
     namespace {
-        constexpr static const uint8_t DEFAULT_RX_PIN = D2;
+        constexpr static const uint8_t DEFAULT_RX_PIN = Device::D2;
         constexpr static const uint32_t UART_SPEED = 9600;
         const char vindriktning_name[] PROGMEM = "Vindriktning";
         class Vindriktning_Definition: public Device::Definition

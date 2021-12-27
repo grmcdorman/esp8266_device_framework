@@ -93,6 +93,6 @@ namespace grmcdorman::device
             Serial.println(status.c_str());
             return std::nullopt;
         }
-        return std::move(json);
+        return json;
     }
 }
