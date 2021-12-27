@@ -46,6 +46,8 @@ jobs:
             # Install the library from the local path.
             - source-path: ./
             - name: ArduinoJson
+            - name: PubSubClient
+            - name: SHT31
             - source-url: https://github.com/me-no-dev/ESPAsyncWebServer.git
             - source-url: https://github.com/me-no-dev/ESPAsyncTCP.git
             - source-url: https://github.com/grmcdorman/esp8266_web_settings.git
