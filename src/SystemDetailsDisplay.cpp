@@ -22,7 +22,7 @@ namespace grmcdorman::device
         flash_size(F("Flash memory size"), F("flash_size")),
         real_flash_size(F("Real flash size"), F("real_flash_size")),
         sketch_size(F("Sketch space"), F("sketch_size")),
-        vendor_chip_id(F("Chip ID"), F("vendor_chip_id")),
+        vendor_chip_id(F("Vendor Chip ID"), F("vendor_chip_id")),
         core_version(F("Core version"), F("core_version")),
         boot_version(F("Boot version"), F("boot_version")),
         sdk_version(F("SDK version"), F("sdk_version")),
