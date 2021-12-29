@@ -7,8 +7,9 @@
 namespace grmcdorman::device
 {
     static const char details_name[] PROGMEM = "System Details";
+    static const char details_identifier[] PROGMEM = "system_details";
     SystemDetailsDisplay::SystemDetailsDisplay():
-        Device(FPSTR(details_name), FPSTR(details_name)),
+        Device(FPSTR(details_name), FPSTR(details_identifier)),
         firmware_name(F("Installed Firmware"), F("firmware_name")),
         compile_datetime(F("Firmware built"), F("compile_datetime")),
         architecture(F("Architecture"), F("architecture")),

@@ -18,12 +18,24 @@ namespace grmcdorman::device
 
     WifiDisplay::WifiDisplay():
         Device(FPSTR(info_name), FPSTR(info_identifier)),
-        title(F("<script>window.addEventListener(\"load\", () => { periodicUpdateList.push(\"WiFi Status\"); });</script>"
+        title(F("<script>periodicUpdateList.push(\"wifi_status"
+            // access_point_mac and MAC address are fixed and don't need to be updated.
+            // Really, a lot of these are unlikely to change while visible in a browser anyway...
+            "&setting=access_point_ip"
+            "&setting=bssid"
+            "&setting=station_ip"
+            "&setting=station_gateway_ip"
+            "&setting=station_subnet_mask"
+            "&setting=dns_server"
+            "&setting=station_mac "
+            "&setting=station_connected"
+            "&setting=station_autoconnect"
+            "\");</script>"
             )),
         access_point_ip(F("Soft AP IP Address"), F("access_point_ip")),
         access_point_mac(F("Soft AP MAC Address"), F("access_point_mac")),
         wifi_bssid(F("BSSID"), F("bssid")),
-        station_ip(F("IP Address"), F("station ip")),
+        station_ip(F("IP Address"), F("station_ip")),
         station_gateway_ip(F("Gateway IP Address"), F("station_gateway_ip")),
         station_subnet_mask(F("Subnet Mask"), F("station_subnet_mask")),
         dns_server(F("DNS Server Address"), F("dns_server")),

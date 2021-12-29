@@ -17,6 +17,7 @@ namespace grmcdorman::device
         constexpr int DEFAULT_SCL = Device::D6;     /// Default SCL connection.
         constexpr int address_map[2] = { 0x44, 0x45 };
         const char sht31_name[] PROGMEM = "SHT31-D";
+        const char sht31_identifier[] PROGMEM = "sht31_d";
         const ExclusiveOptionSetting::names_list_t address_names{ FPSTR("0x44"), FPSTR("0x45")};
 
         class Sht31Device_Temperature_Definition: public Device::Definition
@@ -78,7 +79,7 @@ namespace grmcdorman::device
     }
 
     Sht31Sensor::Sht31Sensor():
-        Device(FPSTR(sht31_name), FPSTR(sht31_name)),
+        Device(FPSTR(sht31_name), FPSTR(sht31_identifier)),
         title(F("<h2>SHT31-D Temperature and Humidity Sensor</h2>")),
         dataPin(F("SDA (Data) Connection"), F("sda"), data_line_names),
         clockPin(F("SCL (Clock) Connection"), F("scl"), data_line_names),
@@ -88,7 +89,7 @@ namespace grmcdorman::device
         humidityOffset(F("Humidity Offset"), F("humidity_offset")),
         humidityScale(F("Humidity Scale Factor"), F("humidity_scale")),
         readInterval(F("Polling interval (seconds)"), F("poll_interval")),
-        last_update(F("Last reading status<script>window.addEventListener(\"load\", () => { periodicUpdateList.push(\"SHT31-D&setting=Last_reading\"); });</script>"), F("Last_reading"))
+        last_update(F("Last reading status<script>periodicUpdateList.push(\"sht31_d&setting=last_reading\");</script>"), F("last_reading"))
     {
         static const Sht31Device_Temperature_Definition temperature_definition;
         static const Sht31Device_Humidity_Definition humidity_definition;
@@ -104,6 +105,7 @@ namespace grmcdorman::device
         humidityOffset.set(0);
         humidityScale.set(1);
         readInterval.set(statusReadInterval / 1000);
+        set_enabled(false);
 
         last_update.set_request_callback([this] (const InfoSettingHtml &)
         {
@@ -115,32 +117,11 @@ namespace grmcdorman::device
 
             if (!available)
             {
-                last_update.set(F("(SHT31-D failed to start or is not connected, or was disabled at boot."));
+                last_update.set(F("SHT31-D failed to start or is not connected, or was disabled at boot."));
+                return;
             }
 
-            String message;
-            if (reading_count > 0)
-            {
-                message += F("Accumulated ");
-                message += reading_count;
-                message += F(" readings; average temperature ");
-                message += temperature_sum / reading_count;
-                message += F(", average humidity ");
-                message += humidity_sum /reading_count;
-            }
-            else
-            {
-                auto since = millis() - sht.lastRead();
-                message = F("No readings have been performed; ");
-                message += since / 1000;
-                message += F(" seconds since last reading");
-            }
-            if (requested)
-            {
-                message = "; a reading is requested";
-            }
-            message += '.';
-            last_update.set(message);
+            last_update.set(get_status());
         });
     }
 
@@ -179,8 +160,11 @@ namespace grmcdorman::device
             bool success  = sht.readData();   // default = true = fast
             if (success)
             {
-                temperature_sum += sht.getTemperature() * temperatureScale.get() + temperatureOffset.get();
-                humidity_sum += sht.getHumidity() * humidityScale.get() + humidityOffset.get();
+                last_read_millis = millis();
+                last_temperature = sht.getTemperature() * temperatureScale.get() + temperatureOffset.get();
+                last_humidity = sht.getHumidity() * humidityScale.get() + humidityOffset.get();
+                temperature_sum += last_temperature;
+                humidity_sum += last_humidity;
                 ++reading_count;
             }
 
@@ -215,5 +199,37 @@ namespace grmcdorman::device
         reading_count = 0;
 
         return true;
+    }
+
+    String Sht31Sensor::get_status() const
+    {
+        if (!is_enabled() || !available)
+        {
+            return String();
+        }
+
+        String message;
+        message.reserve(150);
+
+        // Assumption that temperature is never going to reach -273 C (0 Kelvin).
+        if (last_temperature > -273)
+        {
+            char float_str[64];
+            dtostrf(last_temperature, 1, 1, float_str);
+            message = float_str;
+            message += F(" °C, ");
+            dtostrf(last_humidity, 1, 1, float_str);
+            message += float_str;
+            message += F("% R.H.; ");
+            auto since = millis() - last_read_millis;
+            message += since / 1000;
+            message += F(" seconds since last reading.");
+        }
+        else
+        {
+            message += F("No readings have been performed.");
+        }
+
+        return message;
     }
 }

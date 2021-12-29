@@ -44,6 +44,28 @@ namespace grmcdorman::device
         }
     }
 
+    void Device::set(const String &setting, const String &value)
+    {
+        auto setting_instance = std::find_if(settings.begin(), settings.end(), [setting] (const ::grmcdorman::SettingInterface *entry)
+        {
+            return strcmp_P(setting.c_str(), reinterpret_cast<const char *>(entry->name())) == 0;
+        });
+
+        if (setting_instance != settings.end())
+        {
+            (*setting_instance)->set_from_string(value);
+        }
+    }
+
+    String Device::get(const String &setting) const
+    {
+        auto setting_instance = std::find_if(settings.begin(), settings.end(), [setting] (const ::grmcdorman::SettingInterface *entry)
+        {
+            return strcmp_P(setting.c_str(), reinterpret_cast<const char *>(entry->name())) == 0;
+        });
+        return setting_instance != settings.end() ? (*setting_instance)->as_string() : String();
+    }
+
     const ExclusiveOptionSetting::names_list_t Device::data_line_names{ FPSTR("D1"), FPSTR("D2"), FPSTR("D3"), FPSTR("D5"), FPSTR("D6"), FPSTR("D7")};
 
     const int Device::settingsMap[6] =

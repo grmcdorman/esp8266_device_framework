@@ -6,6 +6,7 @@ namespace grmcdorman::device
         constexpr static const uint8_t DEFAULT_RX_PIN = Device::D2;
         constexpr static const uint32_t UART_SPEED = 9600;
         const char vindriktning_name[] PROGMEM = "Vindriktning";
+        const char vindriktning_identifier[] PROGMEM = "vindriktning";
         class Vindriktning_Definition: public Device::Definition
         {
             public:
@@ -40,13 +41,15 @@ namespace grmcdorman::device
         Device(FPSTR(vindriktning_name), FPSTR(vindriktning_name)),
         title(F("<h2>Vindriktning Air Quality Sensor</h2>")),
         serialDataPin(F("Serial In (Data) Connection)"), F("serial_pin"), data_line_names),
-        last_status(F("Last status<script>window.addEventListener(\"load\", () => { periodicUpdateList.push(\"Vindriktning&setting=last_status\"); });</script>"), F("last_status")),
+        last_status(F("Last status<script>periodicUpdateList.push(\"vindriktning&setting=last_status\");</script>"), F("last_status")),
         sensorSerial()
     {
         static const Vindriktning_Definition vindriktning_definition;
         initialize({&vindriktning_definition}, {&title, &serialDataPin, &last_status, &enabled});
 
         serialDataPin.set(dataline_to_index(DEFAULT_RX_PIN));
+
+        set_enabled(false);
 
         last_status.set_request_callback([this] (const InfoSettingHtml &)
         {
@@ -56,33 +59,7 @@ namespace grmcdorman::device
                 return;
             }
 
-            String state_message;
-            switch (last_read_state)
-            {
-                case State::NEVER_READ:
-                    state_message = F("Never got a reading");
-                    break;
-
-                case State::NO_HEADER_FOUND:
-                    state_message = F("Did not find a header in the last 20 bytes read");
-                    break;
-
-                case State::READ:
-                    state_message = F("Data has been read");
-                    break;
-
-                default:
-                    state_message = F("Something went wrong");
-                    break;
-            }
-
-            if (last_read_millis > 0)
-            {
-                state_message += F("; last reading ") + String(last_pm25) + F(", ") + String((millis() - last_read_millis) / 1000) + " seconds since last reading";
-            }
-
-            state_message += '.';
-            last_status.set(state_message);
+            last_status.set(get_status());
         });
     }
 
@@ -90,7 +67,7 @@ namespace grmcdorman::device
     {
         if (enabled.get())
         {
-            sensorSerial.begin(UART_SPEED, SWSERIAL_8N1, index_to_dataline(serialDataPin.get())/*, -1, false, buffer_size*/);
+            sensorSerial.begin(UART_SPEED, SWSERIAL_8N1, index_to_dataline(serialDataPin.get()), -1, false, buffer_size);
         }
     }
 
@@ -100,7 +77,6 @@ namespace grmcdorman::device
         {
             return;
         }
-        auto now = millis();
 
         // read serial; this will read all data available,
         // up to `buffer_reserved_size` bytes. The expected message is 20 bytes,
@@ -131,11 +107,6 @@ namespace grmcdorman::device
             {
                 last_read_state = State::NO_HEADER_FOUND;
             }
-        }
-        auto then = millis();
-        if (then - now > 100)
-        {
-            Serial.println("VK read took > 100ms: " + String(then - now));
         }
     }
 
@@ -195,5 +166,39 @@ namespace grmcdorman::device
         pm25_count = 0;
 
         return true;
+    }
+
+    String VindriktningAirQuality::get_status() const
+    {
+        String state_message;
+        state_message.reserve(256);
+        if (last_read_millis > 0)
+        {
+            state_message += last_pm25;
+            state_message += F("µg/m³, ");
+            state_message += (millis() - last_read_millis) / 1000;
+            state_message += F(" seconds since last reading. ");
+        }
+
+        switch (last_read_state)
+        {
+            case State::NEVER_READ:
+                state_message = F("Never got a reading.");
+                break;
+
+            case State::NO_HEADER_FOUND:
+                state_message = F("Did not find a header in the last 20 bytes read.");
+                break;
+
+            case State::READ:
+                // No message.
+                break;
+
+            default:
+                state_message = F("Something went wrong.");
+                break;
+        }
+
+        return state_message;
     }
 }

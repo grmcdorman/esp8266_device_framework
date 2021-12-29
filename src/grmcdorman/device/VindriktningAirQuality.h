@@ -31,6 +31,9 @@ namespace grmcdorman::device
      * When a valid reading is discovered in the received Vindriktning data, the reading is added to the sum
      * and all buffered data up to and including the processed message is discarded. Any following
      * data is retained.
+     *
+     * Derived from work by Hypfer's GitHub project, https://github.com/Hypfer/esp8266-vindriktning-particle-sensor.
+     * All work on message deciphering comes from that project.
      */
     class VindriktningAirQuality: public Device
     {
@@ -40,6 +43,18 @@ namespace grmcdorman::device
             void setup() override;
             void loop() override;
             bool publish(DynamicJsonDocument &json) override;
+
+            /**
+             * @brief Get a status report.
+             *
+             * This is also used for the `last_update` info message, with the exception
+             * of various disabled states.
+             *
+             * When the VindriktningAirQuality is disabled this returns an empty string.
+             *
+             * @return String containing status report.
+             */
+            virtual String get_status() const;
 
         private:
             static constexpr uint16_t vindriktning_message_size = 20;

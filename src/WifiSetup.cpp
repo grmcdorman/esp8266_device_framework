@@ -8,6 +8,7 @@ namespace grmcdorman::device
         auto SSID_STRING_LOWER = FPSTR("ssid");
         auto WIFI_STRING_LOWER = FPSTR("wifi");
         const char wifi_name[] PROGMEM = "WiFi";
+        const char wifi_identifier[] PROGMEM = "wifi_setup";
         class WifiSetupDevice_Definition: public Device::Definition
         {
             public:
@@ -39,7 +40,7 @@ namespace grmcdorman::device
     }
 
     WifiSetup::WifiSetup():
-        Device(FPSTR(wifi_name), FPSTR(wifi_name)),
+        Device(FPSTR(wifi_name), FPSTR(wifi_identifier)),
         hostname(F("Hostname"), F("hostname")),
         ssid(F("Access point SSID"), SSID_STRING_LOWER),
         password(F("Access point password"), F("password")),

@@ -34,7 +34,7 @@ At the moment, there are seven devices:
  * Boot version
  * SDK version
  * CPU frequencey
-* [`VindriktningAirQuality`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_vindriktning_air_quality.html): This monitors an Ikea Vindriktning air quality sensor. Code inspired by https://github.com/Hypfer/esp8266-vindriktning-particle-sensor.
+* [`VindriktningAirQuality`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_vindriktning_air_quality.html): This monitors an Ikea Vindriktning air quality sensor. Code inspired by https://github.com/Hypfer/esp8266-vindriktning-particle-sensor. This class is derived from work by Hypfer's GitHub project, https://github.com/Hypfer/esp8266-vindriktning-particle-sensor. All work on message deciphering comes from that project.
 * [`WifiDisplay`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_wifi_display.html):  When connected to a `WebSetting` instance, displays and updates basic WiFi information:
  * Soft IP Address (if applicable)
  * Soft AP MAC address
@@ -60,11 +60,11 @@ At the moment, there are seven devices:
  * Connection timeout (seconds)
  * Publish WiFi signal strength (when enabled, the WiFi signal will be published via the MqttPublish class, if connected).
 
-An additional simple utility class to load and save a JSON file to `LittleFS` storage is provided.
+An additional simple utility class to load and save device settings to `LittleFS` storage is provided.
 
 Usage is generally pretty simple:
 
-* Create an array of devices, containing each of the devices you want to use, and declare a `WebSettings` and a `Config`:
+* Create a vector (`std::vector<Device *>`) of devices, containing each of the devices you want to use, and declare a `WebSettings` and a `Config`:
 ```
 static std::vector<::grmcdorman::device::Device *> devices{
     new ::grmcdorman::device::InfoDisplay,
@@ -86,6 +86,20 @@ static grmcdorman::WebSettings webServer;
         device->set_defaults();
     }
 ```
+* Optionally, set some defaults different from the built-in ones:
+```
+    // Device index # 0 is InfoDisplay. It has no relevant settings.
+    // Device index # 1 is System Details Display. It has no relevant settings.
+    // Device index # 2 is WiFi display. It has no relevant settings.
+    // Device index # 3 is the WiFi setup. A default AP and password could be set:
+    devices[3]->set("ssid", "my access point");
+    // Note that this will *not* be shown in the web page UI.
+    devices[3]->set("password", "my password");
+
+    // Device index # 4 is the SHT31-D. Set the default sda to D2, scl to D3.
+    devices[4]->set("sda", "D2");
+    devices[4]->set("scl", "D3");
+```
 * Load and apply settings:
 ```
     confg.load(devices);
@@ -98,7 +112,7 @@ static grmcdorman::WebSettings webServer;
         device->set_devices(devices);
         // For the present, only the name can be used here. A future update
         // to the WebSettings library will allow both the name and identifier.
-        webServer.add_setting_set(device->name(), device->get_settings());
+        webServer.add_setting_set(device->name(), device->identifier(), device->get_settings());
     }
 ```
 * Call the device `loop` methods in your `loop` function:

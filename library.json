@@ -1,7 +1,7 @@
 {
   "name": "esp8266_device_framework",
   "keywords": "esp8266 device sensor framework",
-  "description": "ESP8266 library for generic device support leveraging esp8266_web_settings"
+  "description": "ESP8266 library for generic device support leveraging esp8266_web_settings",
   "authors":
   [
     {
@@ -14,8 +14,34 @@
     "type": "git",
     "url": "https://github.com/grmcdorman/esp8266_device_framework.git"
   },
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "frameworks": "arduino",
-  "platforms": "esp8266"
+  "platforms": "esp8266",
+  "dependencies": [
+      {
+        "owner": "bblanchon",
+        "name": "ArduinoJson",
+        "version": "^6.18.3"
+    },
+    {
+        "owner": "me-no-dev",
+        "name": "ESPAsyncWebServer",
+        "version": "*"
+    },
+    {
+      "owner": "knolleary",
+      "name": "PubSubClient",
+      "version": "^2.8"
+    },
+    {
+      "owner": "robtillaart",
+      "name": "SHT31",
+      "version": "*"
+    },
+    {
+        "name": "external-repo",
+        "version": "https://github.com/grmcdorman/esp8266_web_settings.git"
+    }
+  ]
 }

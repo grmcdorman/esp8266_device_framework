@@ -69,8 +69,22 @@ namespace grmcdorman::device
              */
             virtual void set_devices(const std::vector<Device *> &list) override
             {
-                devices = list;
+                devices = &list;
             }
+
+            /**
+             * @brief Get a status report.
+             *
+             * This is also used for the `last_update` info message, with the exception
+             * of various disabled states.
+             *
+             * When the MQTT publisher is disabled or nonoperational (e.g. no MQTT server configured),
+             * this returns an empty string.
+             *
+             * @return String containing status report.
+             */
+            virtual String get_status() const;
+
         private:
             /**
              * @brief Reconnect to MQTT.
@@ -110,7 +124,7 @@ namespace grmcdorman::device
             const __FlashStringHelper *publish_model;           //<! The model from the constructor.
             const __FlashStringHelper *publish_software_version;//!< The sofware version from the constructor.
 
-            std::vector<Device *> devices;      //!< The list of attached devices that can publish.
+            const std::vector<Device *> *devices = nullptr; //!< The list of attached devices that will be published.
 
             std::unique_ptr<Client> default_client;         //!< The default communication client, when no client is provided. Created on demand if needed.
             Client                 *client;                 //!< The in-use client.
