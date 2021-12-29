@@ -13,52 +13,55 @@ The example provided in this repository is the actual working sketch I use for m
 
 At the moment, there are seven devices:
 * [`InfoDisplay`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_info_display.html): When connected to a `WebSetting` instance, displays and updates basic system information:
- * Host name and IP address.
- * Connected access point
- * Signal strength
- * Soft API SSID.
- * Heap information (allocatable memory), with fragmentation
- * Uptime (from the `millis()` system call; this will wrap around at about 50 days)
- * `LitteLFS` file system free space and used space
+  * Host name and IP address.
+  * Connected access point
+  * Signal strength
+  * Soft API SSID.
+  * Heap information (allocatable memory), with fragmentation
+  * Uptime (from the `millis()` system call; this will wrap around at about 50 days)
+  * `LitteLFS` file system free space and used space
 * [`MqttPublisher`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_mqtt_publisher.html): This controls message publishing to a MQTT server.
 * [`Sht31Sensor`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_sht31_sensor.html): This polls a SHT31-D temperature and humidity sensor. The default I2C lines are SDA on D5 and SCL on D6, but this can be configured.
 * [`SystemDetailsDisplay`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_system_details_display.html): This displays static system details:
- * Architecture (currently hard-coded to esp8266)
- * Flash Chip ID
- * Last reset reason
- * Flash memory size
- * Real flash size
- * Sketch space (used and total)
- * Chip ID
- * Core version
- * Boot version
- * SDK version
- * CPU frequencey
+  * Installed Firmware (the firmware string passed to `set_system_identifiers`)
+  * Firmware Built (the date and time the compile was done)
+  * Architecture (currently hard-coded to esp8266)
+  * Device Chip ID (the unique device chip ID, from `ESP.getChipId()`)
+  * Flash Chip ID (from `ESP.getFlashChipId()`)
+  * Last reset reason
+  * Flash memory size
+  * Real flash size
+  * Sketch space (used and total)
+  * Vendor Chip ID (from `ESP.getFlashChipVendorId()`)
+  * Core version
+  * Boot version
+  * SDK version
+  * CPU frequencey
 * [`VindriktningAirQuality`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_vindriktning_air_quality.html): This monitors an Ikea Vindriktning air quality sensor. This class is derived from work by Hypfer's GitHub project, https://github.com/Hypfer/esp8266-vindriktning-particle-sensor. All work on message deciphering comes from that project.
 * [`WifiDisplay`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_wifi_display.html):  When connected to a `WebSetting` instance, displays and updates basic WiFi information:
- * Soft IP Address (if applicable)
- * Soft AP MAC address
- * BSSID
- * IP Address
- * Gateway IP Address
- * Subnet Mask
- * DNS Server Address
- * MAC Address
- * Connected
- * Auto Connect
+  * Soft IP Address (if applicable)
+  * Soft AP MAC address
+  * BSSID
+  * IP Address
+  * Gateway IP Address
+  * Subnet Mask
+  * DNS Server Address
+  * MAC Address
+  * Connected
+  * Auto Connect
 * [`WifiSetup`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_wifi_setup.html): Provides settings for WiFi configuration. Patterned in part after the Windows TCP/IP configuration dialog. This will start a Soft Access Point for configuration if no WiFi configuration exists, or the WiFi connection cannot be established. **Warning**: The Soft AP, at the moment, cannot be password protected.
- * Host name
- * Access point SSID
- * Access point password
- * "Obtain an IP address automatically" (i.e. use DHCP)
- * IP Address (static IP address, if applicable)
- * Subnet mask
- * Default Gateway
- * "Obtain DNS server address automatically"
- * Preferred DNS server
- * Alternative DNS server
- * Connection timeout (seconds)
- * Publish WiFi signal strength (when enabled, the WiFi signal will be published via the MqttPublish class, if connected).
+  * Host name
+  * Access point SSID
+  * Access point password
+  * "Obtain an IP address automatically" (i.e. use DHCP)
+  * IP Address (static IP address, if applicable)
+  * Subnet mask
+  * Default Gateway
+  * "Obtain DNS server address automatically"
+  * Preferred DNS server
+  * Alternative DNS server
+  * Connection timeout (seconds)
+  * Publish WiFi signal strength (when enabled, the WiFi signal will be published via the MqttPublish class, if connected).
 
 An additional simple utility class to load and save device settings to `LittleFS` storage is provided.
 

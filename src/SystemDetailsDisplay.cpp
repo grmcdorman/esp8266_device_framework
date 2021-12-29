@@ -17,7 +17,7 @@ namespace grmcdorman::device
         compile_datetime(F("Firmware built"), F("compile_datetime")),
         architecture(F("Architecture"), F("architecture")),
         device_chip_id(F("Device Chip ID"), F("device_chip_id")),
-        flash_chip(F("Flash Chip"), F("flash_chip")),
+        flash_chip(F("Flash Chip ID"), F("flash_chip")),
         last_reset(F("Last reset reason"), F("last_reset")),
         flash_size(F("Flash memory size"), F("flash_size")),
         real_flash_size(F("Real flash size"), F("real_flash_size")),
