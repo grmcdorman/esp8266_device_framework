@@ -7,7 +7,7 @@ All devices can have a collection of _settings_ as defined in the [Web Settings]
 
 In addition, devices can easily publish to a MQTT server, provided the `MqttPublisher` device is included, configured, and enabled.
 
-**Warning** The standard [ESP Async Web Server](https://github.com/me-no-dev/ESPAsyncWebServer) adds substantial overhead to your sketch; the ESP fork of this project, [ESP Home ESP Async Web Server](https://github.com/esphome/ESPAsyncWebServer) both compiles to substantially smaller code and has a smaller memory footprint. It is not clear what ESP Home has done in their fork; presumably they have removed functionality. Testing with the ESP Home fork and this code has, as yet, shown no issues. If you have sufficient storage on your device, I recommend you use the primary repository; if not, you can use the ESP Home fork. The D1 Mini I am using, however, does not have sufficient storage; I am using the ESP Home fork in my own projects.
+**Warning** The standard [ESP Async Web Server](https://github.com/me-no-dev/ESPAsyncWebServer) adds substantial overhead to your sketch; the ESP fork of that project, [ESP Home ESP Async Web Server](https://github.com/esphome/ESPAsyncWebServer) both compiles to substantially smaller code and has a smaller memory footprint. It is not clear what ESP Home has done in their fork; presumably they have removed functionality. Testing with the ESP Home fork and this code has, as yet, shown no issues. If you have sufficient storage on your device, I recommend you use the primary repository; if not, you can use the ESP Home fork. The D1 Mini I am using, however, does not have sufficient storage; I am using the ESP Home fork in my own projects.
 
 The example provided in this repository is the actual working sketch I use for my own Ikea Vindriktning air quality sensor; I have added a SHT31-D to the setup. You may notice from the screen shots that a temperature offset is applied; it appears that either the sensor reads high by two to three degrees Celcius or the heat generated inside the Vindriktning case throws off the reading by that amount.
 
@@ -185,4 +185,4 @@ Screenshots:
 * `SystemDetailsDisplay`: ![Details display](images/Screenshot-details-panel.png?raw=true "Info Panel")
 * `VindriktningAirQuality`: ![Details display](images/Screenshot-vindriktning-panel.png?raw=true "Info Panel")
 * `WifiDisplay`: ![Details display](images/Screenshot-wifi-status-panel.png?raw=true "Info Panel")
-* `WifiSetup`:  ![Details display](images/Screenshot-wifi-status-panel.png?raw=true "Info Panel")
+* `WifiSetup`:  ![Details display](images/Screenshot-wifi-setup-panel.png?raw=true "Info Panel")
