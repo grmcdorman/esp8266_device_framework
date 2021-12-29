@@ -80,7 +80,8 @@ Overview</h1>
 <li><a class="el" href="classgrmcdorman_1_1device_1_1_wifi_display.html">WifiDisplay</a></li>
 <li><a class="el" href="classgrmcdorman_1_1device_1_1_wifi_setup.html">WifiSetup</a></li>
 </ul>
-<p >An additional helper class, <a class="el" href="classgrmcdorman_1_1device_1_1_config_file.html">ConfigFile</a>, provides basic JSON configuration file loading and saving.</p>
+<p >The VindriktningAirQuality class is derived from work by Hypfer's GitHub project, <a href="https://github.com/Hypfer/esp8266-vindriktning-particle-sensor">https://github.com/Hypfer/esp8266-vindriktning-particle-sensor</a>. All work on message deciphering comes from that project.</p>
+<p >An additional helper class, <a class="el" href="classgrmcdorman_1_1device_1_1_config_file.html">ConfigFile</a>, provides basic JSON configuration file loading and saving for the list of devices.</p>
 <p >The sketch using the devices must have two strings, a firmware name, and a system identifier. The former is a static <code>PROGMEM</code> string identifying the name or purpose of the sketch; the latter should be a unique name for the specific ESP device; typically this can be a derivative of the firmware name and the ESP chip ID, in hex.</p>
 <p >In the sketch <code>setup()</code> function, the following operations should be performed, in sequence, on the list of devices; this assumes you a global <code>std::vector&lt;Device *&gt; devices</code>, a global configuration object <code>ConfigFile config</code>, and a global <code>WebSettings web_settings</code>.</p>
 <ul>
@@ -90,13 +91,25 @@ Overview</h1>
 <div class="line">    device-&gt;set_defaults();</div>
 <div class="line">}</div>
 </div><!-- fragment --></li>
+<li>Optionally, set some defaults different from the built-in ones: <div class="fragment"><div class="line"><span class="comment">// Device index # 0 is InfoDisplay. It has no relevant settings.</span></div>
+<div class="line"><span class="comment">// Device index # 1 is System Details Display. It has no relevant settings.</span></div>
+<div class="line"><span class="comment">// Device index # 2 is WiFi display. It has no relevant settings.</span></div>
+<div class="line"><span class="comment">// Device index # 3 is the WiFi setup. A default AP and password could be set:</span></div>
+<div class="line">devices[3]-&gt;set(<span class="stringliteral">&quot;ssid&quot;</span>, <span class="stringliteral">&quot;my access point&quot;</span>);</div>
+<div class="line"><span class="comment">// Note that this will *not* be shown in the web page UI.</span></div>
+<div class="line">devices[3]-&gt;set(<span class="stringliteral">&quot;password&quot;</span>, <span class="stringliteral">&quot;my password&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Device index # 4 is the SHT31-D. Set the default sda to D2, scl to D3.</span></div>
+<div class="line">devices[4]-&gt;set(<span class="stringliteral">&quot;sda&quot;</span>, <span class="stringliteral">&quot;D2&quot;</span>);</div>
+<div class="line">devices[4]-&gt;set(<span class="stringliteral">&quot;scl&quot;</span>, <span class="stringliteral">&quot;D3&quot;</span>);</div>
+</div><!-- fragment --></li>
 <li>load settings: <div class="fragment"><div class="line">config.load(devices);</div>
 </div><!-- fragment --></li>
 <li>Setup devices and add to the web settings: <div class="fragment"><div class="line"><span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp;device : devices)</div>
 <div class="line">{</div>
 <div class="line">    device-&gt;setup();</div>
 <div class="line">    device-&gt;set_devices(devices);</div>
-<div class="line">    webServer.add_setting_set(device-&gt;name(), device-&gt;get_settings());</div>
+<div class="line">    webServer.add_setting_set(device-&gt;name(), device-&gt;identifier(), device-&gt;get_settings());</div>
 <div class="line">}</div>
 </div><!-- fragment --></li>
 </ul>

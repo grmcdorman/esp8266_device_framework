@@ -92,23 +92,39 @@ $(function() {
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="keyword">            </span>{</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            }</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>            NoteSetting title;                              </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>            InfoSettingHtml host;                           </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>            InfoSettingHtml station_ssid;                   </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            InfoSettingHtml rssi;                           </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>            InfoSettingHtml softap;                         </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>            InfoSettingHtml heap_status;                    </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            InfoSettingHtml uptime;                         </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            InfoSettingHtml filesystem;                     </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    };</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>}</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="classgrmcdorman_1_1device_1_1_info_display.html#afd45ac40616e52e2972fc55a0bdd7db4">   60</a></span>            <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classgrmcdorman_1_1device_1_1_info_display.html#afd45ac40616e52e2972fc55a0bdd7db4">set_devices</a>(<span class="keyword">const</span> std::vector&lt;Device *&gt; &amp;list)<span class="keyword"> override</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="keyword">            </span>{</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>                devices = &amp;list;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            }</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="classgrmcdorman_1_1device_1_1_info_display.html#aae67f74f984da9332b20f288d3699622">   76</a></span>            <span class="keyword">virtual</span> String <a class="code hl_function" href="classgrmcdorman_1_1device_1_1_info_display.html#aae67f74f984da9332b20f288d3699622">get_status</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="keyword">            </span>{</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>                <span class="keywordflow">return</span> String();</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>            }</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>            NoteSetting title;                              </div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>            InfoSettingHtml host;                           </div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>            InfoSettingHtml station_ssid;                   </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>            InfoSettingHtml rssi;                           </div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>            InfoSettingHtml softap;                         </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>            InfoSettingHtml heap_status;                    </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>            InfoSettingHtml uptime;                         </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>            InfoSettingHtml filesystem;                     </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            InfoSettingHtml device_status;                  </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>            <span class="keyword">const</span> std::vector&lt;Device *&gt; *devices = <span class="keyword">nullptr</span>; </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            <span class="keywordtype">void</span> on_request_device_status();</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    };</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>}</div>
 <div class="ttc" id="aclassgrmcdorman_1_1device_1_1_device_html"><div class="ttname"><a href="classgrmcdorman_1_1device_1_1_device.html">grmcdorman::device::Device</a></div><div class="ttdoc">The generic device interface.</div><div class="ttdef"><b>Definition:</b> Device.h:24</div></div>
 <div class="ttc" id="aclassgrmcdorman_1_1device_1_1_info_display_html"><div class="ttname"><a href="classgrmcdorman_1_1device_1_1_info_display.html">grmcdorman::device::InfoDisplay</a></div><div class="ttdoc">This class is a readonly system-information panel.</div><div class="ttdef"><b>Definition:</b> InfoDisplay.h:17</div></div>
 <div class="ttc" id="aclassgrmcdorman_1_1device_1_1_info_display_html_a179484d153f0ab90064b1ca500abd8cb"><div class="ttname"><a href="classgrmcdorman_1_1device_1_1_info_display.html#a179484d153f0ab90064b1ca500abd8cb">grmcdorman::device::InfoDisplay::loop</a></div><div class="ttdeci">void loop() override</div><div class="ttdoc">Loop.</div><div class="ttdef"><b>Definition:</b> InfoDisplay.h:38</div></div>
 <div class="ttc" id="aclassgrmcdorman_1_1device_1_1_info_display_html_aae4aa41e5068d144b02404e5eae4927a"><div class="ttname"><a href="classgrmcdorman_1_1device_1_1_info_display.html#aae4aa41e5068d144b02404e5eae4927a">grmcdorman::device::InfoDisplay::setup</a></div><div class="ttdeci">void setup() override</div><div class="ttdoc">Setup.</div><div class="ttdef"><b>Definition:</b> InfoDisplay.h:30</div></div>
+<div class="ttc" id="aclassgrmcdorman_1_1device_1_1_info_display_html_aae67f74f984da9332b20f288d3699622"><div class="ttname"><a href="classgrmcdorman_1_1device_1_1_info_display.html#aae67f74f984da9332b20f288d3699622">grmcdorman::device::InfoDisplay::get_status</a></div><div class="ttdeci">virtual String get_status() const</div><div class="ttdoc">Get a status report.</div><div class="ttdef"><b>Definition:</b> InfoDisplay.h:76</div></div>
 <div class="ttc" id="aclassgrmcdorman_1_1device_1_1_info_display_html_ac948bfb1e735a65773910f909e8eb51e"><div class="ttname"><a href="classgrmcdorman_1_1device_1_1_info_display.html#ac948bfb1e735a65773910f909e8eb51e">grmcdorman::device::InfoDisplay::publish</a></div><div class="ttdeci">bool publish(DynamicJsonDocument &amp;json) override</div><div class="ttdoc">Publish to MQTT.</div><div class="ttdef"><b>Definition:</b> InfoDisplay.h:48</div></div>
-<div class="ttc" id="aclassgrmcdorman_1_1device_1_1_info_display_html_acd69c7687c74813fe7f0cf219f7a588a"><div class="ttname"><a href="classgrmcdorman_1_1device_1_1_info_display.html#acd69c7687c74813fe7f0cf219f7a588a">grmcdorman::device::InfoDisplay::InfoDisplay</a></div><div class="ttdeci">InfoDisplay()</div><div class="ttdoc">Construct a new InfoDisplay Device object.</div><div class="ttdef"><b>Definition:</b> InfoDisplay.cpp:11</div></div>
+<div class="ttc" id="aclassgrmcdorman_1_1device_1_1_info_display_html_acd69c7687c74813fe7f0cf219f7a588a"><div class="ttname"><a href="classgrmcdorman_1_1device_1_1_info_display.html#acd69c7687c74813fe7f0cf219f7a588a">grmcdorman::device::InfoDisplay::InfoDisplay</a></div><div class="ttdeci">InfoDisplay()</div><div class="ttdoc">Construct a new InfoDisplay Device object.</div><div class="ttdef"><b>Definition:</b> InfoDisplay.cpp:15</div></div>
+<div class="ttc" id="aclassgrmcdorman_1_1device_1_1_info_display_html_afd45ac40616e52e2972fc55a0bdd7db4"><div class="ttname"><a href="classgrmcdorman_1_1device_1_1_info_display.html#afd45ac40616e52e2972fc55a0bdd7db4">grmcdorman::device::InfoDisplay::set_devices</a></div><div class="ttdeci">virtual void set_devices(const std::vector&lt; Device * &gt; &amp;list) override</div><div class="ttdoc">Add a list of devices that will report status.</div><div class="ttdef"><b>Definition:</b> InfoDisplay.h:60</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

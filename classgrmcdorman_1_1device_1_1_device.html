@@ -156,6 +156,15 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~Device</b> ()</td
 <tr class="memitem:a9b7bdebdb0d4f4771640d32493502cf9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_device.html#a9b7bdebdb0d4f4771640d32493502cf9">set_enabled</a> (bool state)</td></tr>
 <tr class="memdesc:a9b7bdebdb0d4f4771640d32493502cf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set whether this device is enabled.  <a href="classgrmcdorman_1_1device_1_1_device.html#a9b7bdebdb0d4f4771640d32493502cf9">More...</a><br /></td></tr>
 <tr class="separator:a9b7bdebdb0d4f4771640d32493502cf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57f31040d3144c6fc1512dd43e954fc5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_device.html#a57f31040d3144c6fc1512dd43e954fc5">set</a> (const String &amp;setting, const String &amp;value)</td></tr>
+<tr class="memdesc:a57f31040d3144c6fc1512dd43e954fc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">If possible, set a setting's value.  <a href="classgrmcdorman_1_1device_1_1_device.html#a57f31040d3144c6fc1512dd43e954fc5">More...</a><br /></td></tr>
+<tr class="separator:a57f31040d3144c6fc1512dd43e954fc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21c41e0012ab1b8c9618f7ffbc18dbf1"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_device.html#a21c41e0012ab1b8c9618f7ffbc18dbf1">get</a> (const String &amp;setting) const</td></tr>
+<tr class="memdesc:a21c41e0012ab1b8c9618f7ffbc18dbf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a setting value, as a string.  <a href="classgrmcdorman_1_1device_1_1_device.html#a21c41e0012ab1b8c9618f7ffbc18dbf1">More...</a><br /></td></tr>
+<tr class="separator:a21c41e0012ab1b8c9618f7ffbc18dbf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4c4769395fe90f513834dbb3f64e1d4"><td class="memItemLeft" align="right" valign="top">virtual String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_device.html#ae4c4769395fe90f513834dbb3f64e1d4">get_status</a> () const</td></tr>
+<tr class="memdesc:ae4c4769395fe90f513834dbb3f64e1d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a status report.  <a href="classgrmcdorman_1_1device_1_1_device.html#ae4c4769395fe90f513834dbb3f64e1d4">More...</a><br /></td></tr>
+<tr class="separator:ae4c4769395fe90f513834dbb3f64e1d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -318,6 +327,36 @@ Static Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a21c41e0012ab1b8c9618f7ffbc18dbf1" name="a21c41e0012ab1b8c9618f7ffbc18dbf1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21c41e0012ab1b8c9618f7ffbc18dbf1">&#9670;&nbsp;</a></span>get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String grmcdorman::device::Device::get </td>
+          <td>(</td>
+          <td class="paramtype">const String &amp;&#160;</td>
+          <td class="paramname"><em>setting</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a setting value, as a string. </p>
+<p >The setting is located by name, and its value is converted to a string if necessary.</p>
+<p >Internally, this search the list of settings for the named setting, and then returns the value of <code>Setting::as_string</code>.</p>
+<p >If the setting is not found, an empty string is returned.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">setting</td><td>Name of setting. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Setting's value, as a string; empty string if not found. </dd></dl>
+
+</div>
+</div>
 <a id="a152b8c0fb0de33fd87ff9e2c4a93194e" name="a152b8c0fb0de33fd87ff9e2c4a93194e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a152b8c0fb0de33fd87ff9e2c4a93194e">&#9670;&nbsp;</a></span>get_definitions()</h2>
 
@@ -401,6 +440,37 @@ Static Protected Attributes</h2></td></tr>
 <p>Get the settings list. </p>
 <p >This returns a list of zero or more individual settings for this device.</p>
 <dl class="section return"><dt>Returns</dt><dd>A reference to the settings list. </dd></dl>
+
+</div>
+</div>
+<a id="ae4c4769395fe90f513834dbb3f64e1d4" name="ae4c4769395fe90f513834dbb3f64e1d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4c4769395fe90f513834dbb3f64e1d4">&#9670;&nbsp;</a></span>get_status()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual String grmcdorman::device::Device::get_status </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get a status report. </p>
+<p >This is typically also reported in an info setting. By default this returns an empty string, i.e. no report.</p>
+<dl class="section return"><dt>Returns</dt><dd>String containing status report. </dd></dl>
+
+<p>Reimplemented in <a class="el" href="classgrmcdorman_1_1device_1_1_info_display.html#aae67f74f984da9332b20f288d3699622">grmcdorman::device::InfoDisplay</a>, <a class="el" href="classgrmcdorman_1_1device_1_1_mqtt_publisher.html#a83e780b7cd12d006fff60e709a566d3f">grmcdorman::device::MqttPublisher</a>, <a class="el" href="classgrmcdorman_1_1device_1_1_sht31_sensor.html#abc1ceb41d09cec34a46298b759075726">grmcdorman::device::Sht31Sensor</a>, and <a class="el" href="classgrmcdorman_1_1device_1_1_vindriktning_air_quality.html#a9b5c76027c6450e68ca6b4f68ff4af5f">grmcdorman::device::VindriktningAirQuality</a>.</p>
 
 </div>
 </div>
@@ -673,6 +743,46 @@ false The device is disabled. </dd></dl>
 
 </div>
 </div>
+<a id="a57f31040d3144c6fc1512dd43e954fc5" name="a57f31040d3144c6fc1512dd43e954fc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57f31040d3144c6fc1512dd43e954fc5">&#9670;&nbsp;</a></span>set()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void grmcdorman::device::Device::set </td>
+          <td>(</td>
+          <td class="paramtype">const String &amp;&#160;</td>
+          <td class="paramname"><em>setting</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const String &amp;&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>If possible, set a setting's value. </p>
+<p >The setting is located by name, and the value is converted from the string if necessary.</p>
+<p >If the setting cannot be found, nothing is done.</p>
+<p >Internally, this searches the list of settings for the named setting, and then uses <code>Setting::set_from_string</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">setting</td><td>Name of setting. </td></tr>
+    <tr><td class="paramname">value</td><td>New value for setting. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="abde420e7825312ed3fa4fcd6d3248c40" name="abde420e7825312ed3fa4fcd6d3248c40"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abde420e7825312ed3fa4fcd6d3248c40">&#9670;&nbsp;</a></span>set_defaults()</h2>
 
@@ -735,7 +845,7 @@ false The device is disabled. </dd></dl>
   </dd>
 </dl>
 
-<p>Reimplemented in <a class="el" href="classgrmcdorman_1_1device_1_1_mqtt_publisher.html#ae487a840e88f07f1f831dc77ba101660">grmcdorman::device::MqttPublisher</a>.</p>
+<p>Reimplemented in <a class="el" href="classgrmcdorman_1_1device_1_1_info_display.html#afd45ac40616e52e2972fc55a0bdd7db4">grmcdorman::device::InfoDisplay</a>, and <a class="el" href="classgrmcdorman_1_1device_1_1_mqtt_publisher.html#ae487a840e88f07f1f831dc77ba101660">grmcdorman::device::MqttPublisher</a>.</p>
 
 </div>
 </div>
