@@ -16,21 +16,27 @@ namespace grmcdorman::device
         firmware_name(F("Installed Firmware"), F("firmware_name")),
         compile_datetime(F("Firmware built"), F("compile_datetime")),
         architecture(F("Architecture"), F("architecture")),
+        device_chip_id(F("Device Chip ID"), F("device_chip_id")),
         flash_chip(F("Flash Chip"), F("flash_chip")),
         last_reset(F("Last reset reason"), F("last_reset")),
         flash_size(F("Flash memory size"), F("flash_size")),
         real_flash_size(F("Real flash size"), F("real_flash_size")),
         sketch_size(F("Sketch space"), F("sketch_size")),
-        chipid(F("Chip ID"), F("chipid")),
+        vendor_chip_id(F("Chip ID"), F("vendor_chip_id")),
         core_version(F("Core version"), F("core_version")),
         boot_version(F("Boot version"), F("boot_version")),
         sdk_version(F("SDK version"), F("sdk_version")),
         cpu_frequency(F("CPU frequency"), F("cpu_frequency"))
     {
-        initialize({}, {&architecture, &flash_chip, &last_reset, &flash_size, &real_flash_size, &sketch_size, &chipid,
+        initialize({}, {&firmware_name, &compile_datetime, &architecture,
+            &device_chip_id,
+            &flash_chip, &last_reset, &flash_size, &real_flash_size,
+            &sketch_size, &vendor_chip_id,
             &core_version, &boot_version, &sdk_version, &cpu_frequency});
+
         architecture.set(F("esp8266"));
         compile_datetime.set(F(__DATE__ " " __TIME__));
+        device_chip_id.set(String(ESP.getChipId(), 16));
         flash_chip.set(String(ESP.getFlashChipId(), 16));
         last_reset.set(ESP.getResetInfo());
         flash_size.set(String(ESP.getFlashChipSize()));
@@ -47,7 +53,7 @@ namespace grmcdorman::device
         strcat_P(sketch_size_string, bytes_str);
         sketch_size.set(sketch_size_string);
 
-        chipid.set(String(ESP.getFlashChipVendorId(), 16));
+        vendor_chip_id.set(String(ESP.getFlashChipVendorId(), 16));
         core_version.set(ESP.getCoreVersion());
         boot_version.set(String(ESP.getBootVersion()));
         sdk_version.set(ESP.getSdkVersion());
