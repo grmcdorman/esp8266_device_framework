@@ -6,11 +6,15 @@
 
 namespace grmcdorman::device
 {
-    static const char info_name[] PROGMEM = "System Overview";
+    namespace
+    {
+        const char info_name[] PROGMEM = "System Overview";
+        const char info_identifier[] PROGMEM = "system_overview";
+    }
 
     InfoDisplay::InfoDisplay():
-        Device(FPSTR(info_name), FPSTR(info_name)),
-        title(F("<script>window.addEventListener(\"load\", () => { periodicUpdateList.push(\"System Overview\"); });</script>"
+        Device(FPSTR(info_name), FPSTR(info_identifier)),
+        title(F("<script>periodicUpdateList.push(\"system_overview\");</script>"
             )),
         host(F("Host"), F("host")),
         station_ssid(F("Connected to AP"), F("station_ssid")),
@@ -18,10 +22,20 @@ namespace grmcdorman::device
         softap(F("Soft AP SSID"), F("softap")),
         heap_status(F("Allocatable memory"), F("heap_status")),
         uptime(F("Uptime"), F("uptime")),
-        filesystem(F("File system status"), F("filesystem"))
+        filesystem(F("File system status"), F("filesystem")),
+        device_status(F("Sensor & controls status"), F("device_status"))
     {
-        initialize({}, {&title, &host, &station_ssid, &rssi, &softap, &heap_status, &uptime, &filesystem});
+        initialize({}, {&title, &host, &station_ssid, &rssi, &softap, &heap_status, &uptime, &filesystem, &device_status});
         host.set_request_callback([this] (const ::grmcdorman::InfoSettingHtml &) {
+            // This, unfortunately, is the hostname configured in the WiFi setup.
+            // It is _not_ the hostname that may be returned from a DHCP query, particularly
+            // if said DHCP server has a static lease configured for this host. Note that
+            // the DHCP protocol does support this (DHCPACK returns the assigned host name).
+            //
+            // Further, a `get host by address` function appears to be missing in the system libraries
+            // (lwip/dns.h has dns_gethostbyname, no dns_gethostbyaddress or similar).
+            //
+            // As a result, there's no way to discover a DHCP and/or DNS assigned host name :-/
             host.set(WiFi.hostname() + F(" [") + WiFi.localIP().toString() + F("]"));
         });
         station_ssid.set_request_callback([this] (const ::grmcdorman::InfoSettingHtml &) {
@@ -104,12 +118,82 @@ namespace grmcdorman::device
             fs::FSInfo64 info;
             if (LittleFS.info64(info))
             {
-                filesystem.set("LittleFS: total bytes " + String(info.totalBytes) + ", used bytes: " + String(info.usedBytes));
+                static const char first_part[] PROGMEM = "LittleFS: total bytes ";
+                static const char second_part[] PROGMEM = ", used bytes: ";
+                // Try to build message without too many mallocs.
+                String message;
+                message.reserve(sizeof (first_part) + sizeof(second_part) + 64);    // Allow up to 32 digits each for totalBytes, usedBytes, but can grow
+                message += FPSTR(first_part);
+                message += info.totalBytes;
+                message += FPSTR(second_part);
+                message += info.usedBytes;
+                filesystem.set(message);
             }
             else
             {
-                filesystem.set("No LittleFS information available");
+                filesystem.set(F("No LittleFS information available"));
             }
         });
+
+        device_status.set_request_callback([this] (const ::grmcdorman::InfoSettingHtml &) {
+            on_request_device_status();
+        });
+    }
+
+    void InfoDisplay::on_request_device_status()
+    {
+        if (devices == nullptr)
+        {
+            return;
+        }
+
+        // Get all enabled devices reporting a non-blank status message.
+        // These arrays are going to be oversized; the extra values should
+        // not hurt.
+        String messages[devices->size()];
+        const __FlashStringHelper *names[devices->size()];
+        int count = 0;
+        size_t message_bytes(0);
+        for (const auto &device: *devices)
+        {
+            if (!device->is_enabled() || device == this || device == nullptr)
+            {
+                continue;
+            }
+
+            messages[count] = device->get_status();
+            if (!messages[count].isEmpty())
+            {
+                names[count] = device->name();
+                // Each message line format:
+                // <device-name>: <message><br>
+                // i.e device name length, 2 characters, message length, 4 characters.
+                message_bytes += messages[count].length() + strlen_P(reinterpret_cast<const char *>(device->name())) + 6;
+                ++count;
+            }
+        }
+
+        if (message_bytes > 0)
+        {
+            String full_message;
+            full_message.reserve(message_bytes);
+            for (int index = 0; index < count; ++index)
+            {
+                if (index != 0)
+                {
+                    full_message += F("<br>");
+                }
+                full_message += names[index];
+                full_message += ':';
+                full_message += ' ';
+                full_message += messages[index];
+            }
+
+            device_status.set(full_message);
+        }
+        else
+        {
+            device_status.set(String());
+        }
     }
 }

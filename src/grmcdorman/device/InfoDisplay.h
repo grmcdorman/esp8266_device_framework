@@ -49,6 +49,34 @@ namespace grmcdorman::device
             {
                 return false;
             }
+            /**
+             * @brief Add a list of devices that will report status.
+             *
+             * The status message (`get_status`) will be reported any device
+             * that is enabled and returns a non-blank status message.
+             *
+             * @param list      List of devices to query for status reports..
+             */
+            virtual void set_devices(const std::vector<Device *> &list) override
+            {
+                devices = &list;
+            }
+
+            /**
+             * @brief Get a status report.
+             *
+             * For this device, it is the RSSI value. No other values
+             * are reported.
+             *
+             * The `on_request_device_status` will bypass collecting this status
+             * if this device is included in the reporting list.
+             *
+             * @return String containing status report.
+             */
+            virtual String get_status() const
+            {
+                return String();
+            }
         private:
             NoteSetting title;                              //!< The panel title. Includes script for panel updating.
             InfoSettingHtml host;                           //!< The host name.
@@ -58,5 +86,14 @@ namespace grmcdorman::device
             InfoSettingHtml heap_status;                    //!< Free heap, max heap alloc, fragmentation.
             InfoSettingHtml uptime;                         //!< System up time.
             InfoSettingHtml filesystem;                     //!< File system information, if available.
+            InfoSettingHtml device_status;                  //!< Status of linked devices.
+
+            const std::vector<Device *> *devices = nullptr; //!< The list of attached devices which will report status.
+
+            /**
+             * @brief Accumulate status message for all attached enabled devices.
+             *
+             */
+            void on_request_device_status();
     };
 }

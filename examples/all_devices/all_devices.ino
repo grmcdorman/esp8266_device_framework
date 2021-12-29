@@ -23,7 +23,7 @@ static const char firmware_name[] PROGMEM = "esp8266-vindriktning-particle-senso
 static const char identifier_prefix[] PROGMEM = "VINDRIKTNING-";
 static const char manufacturer[] PROGMEM = "grmcdorman";
 static const char model[] PROGMEM = "device_framework_example";
-static const char software_version[] PROGMEM = "1.0.0";
+static const char software_version[] PROGMEM = "1.1.0";
 
 // The default identifier string.
 static char identifier[sizeof ("VINDRIKTNING-") + 12];
@@ -32,16 +32,28 @@ static char identifier[sizeof ("VINDRIKTNING-") + 12];
 static grmcdorman::device::ConfigFile config;
 static grmcdorman::WebSettings webServer;
 
+// Device declarations. Order is not important.
+static ::grmcdorman::device::InfoDisplay info_display;
+static ::grmcdorman::device::SystemDetailsDisplay system_details_display;
+static ::grmcdorman::device::WifiDisplay wifi_display;
+static ::grmcdorman::device::WifiSetup wifi_setup;
+static ::grmcdorman::device::Sht31Sensor sht31_sensor;
+static ::grmcdorman::device::VindriktningAirQuality vindriktning_air_quality;
+
+// This uses the default WiFiClient for communications.
+static ::grmcdorman::device::MqttPublisher mqtt_publisher(FPSTR(manufacturer), FPSTR(model), FPSTR(software_version));
+
+
 // Device list. Order _is_ important; this is the order they're presented on the web page.
 static std::vector<grmcdorman::device::Device *> devices
 {
-    new ::grmcdorman::device::InfoDisplay,
-    new ::grmcdorman::device::SystemDetailsDisplay,
-    new ::grmcdorman::device::WifiDisplay,
-    new ::grmcdorman::device::WifiSetup,
-    new ::grmcdorman::device::Sht31Sensor,
-    new ::grmcdorman::device::VindriktningAirQuality,
-    new ::grmcdorman::device::MqttPublisher(FPSTR(manufacturer), FPSTR(model), FPSTR(software_version)) // This uses the default WiFiClient for communications.
+    &info_display,
+    &system_details_display,
+    &wifi_display,
+    &wifi_setup,
+    &sht31_sensor,
+    &vindriktning_air_quality,
+    &mqtt_publisher
 };
 
 // State.
@@ -68,6 +80,20 @@ void setup() {
     Serial.print("My default identifier is ");
     Serial.println(identifier);
 
+    // Set some defaults.
+
+    // Device index # 0 is InfoDisplay. It has no relevant settings.
+    // Device index # 1 is System Details Display. It has no relevant settings.
+    // Device index # 2 is WiFi display. It has no relevant settings.
+    // Device index # 3 is the WiFi setup. A default AP and password could be set:
+    devices[3]->set("ssid", "my access point");
+    // Note that this will *not* be shown in the web page UI.
+    devices[3]->set("password", "my password");
+
+    // Device index # 4 is the SHT31-D. Set the default sda to D2, scl to D3.
+    devices[4]->set("sda", "D2");
+    devices[4]->set("scl", "D3");
+
     for (auto &device: devices)
     {
         device->set_system_identifiers(FPSTR(firmware_name), identifier);
@@ -76,13 +102,19 @@ void setup() {
 
     config.load(devices);
 
+    // If you wanted to override settings, you could call device 'set' methods here.
+
+    // Print some device settings.
+    Serial.print("WiFi SSID is ");
+    Serial.println(devices[3]->get("ssid"));
+    Serial.print("SHT31-D SDA is on pin ");
+    Serial.println(devices[4]->get("sda"));
+
     for (auto &device : devices)
     {
         device->setup();
         device->set_devices(devices);
-        // For the present, only the name can be used here. A future update
-        // to the WebSettings library will allow both the name and identifier.
-        webServer.add_setting_set(device->name(), device->get_settings());
+        webServer.add_setting_set(device->name(), device->identifier(), device->get_settings());
     }
 
     if (WiFi.isConnected())

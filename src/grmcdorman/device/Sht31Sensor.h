@@ -21,11 +21,28 @@ namespace grmcdorman::device
             void setup() override;
             void loop() override;
             bool publish(DynamicJsonDocument &json) override;
+
+            /**
+             * @brief Get a status report.
+             *
+             * This is also used for the `device_status` info message, with the exception
+             * of various disabled states.
+             *
+             * When the SHT31Sensor is disabled or nonoperational,
+             * this returns an empty string.
+             *
+             * @return String containing status report.
+             */
+            virtual String get_status() const;
+
         private:
             SHT31 sht;
             float temperature_sum = 0.0;        //!< The sum of all temperature readings since the last publish.
             float humidity_sum = 0.0;           //!< The sum of all humidity readings since the last publish.
             uint32_t reading_count = 0;         //!< The number of reads performed since the last publish.
+            float last_temperature = -273;      //!< Last read temperature. Initialized to 0 Kelvin, which we are rather unlikely to see.
+            float last_humidity = 0.0;          //!< Last read humidity.
+            uint32_t last_read_millis;          //!< Timestamp of last read.
             bool requested = false;             //!< Whether a reading was requested.
             bool available = false;             //!< Whether the device is available.
             uint32_t statusReadPreviousMillis = 0;  // The time since the last read.
@@ -40,6 +57,6 @@ namespace grmcdorman::device
             FloatSetting humidityOffset;        //!< Offset applied to humidity readings.
             FloatSetting humidityScale;         //!< Scaling applied to humidity readings.
             UnsignedIntegerSetting readInterval;//!< How often to request a reading.
-            InfoSettingHtml last_update;        //!< Last update
+            InfoSettingHtml device_status;        //!< Last update
     };
 }

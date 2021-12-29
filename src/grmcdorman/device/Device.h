@@ -298,6 +298,51 @@ namespace grmcdorman::device
                 enabled.set(state);
             }
 
+            /**
+             * @brief If possible, set a setting's value.
+             *
+             * The setting is located by name, and the value is
+             * converted from the string if necessary.
+             *
+             * If the setting cannot be found, nothing is done.
+             *
+             * Internally, this searches the list of settings
+             * for the named setting, and then uses `Setting::set_from_string`.
+             *
+             * @param setting   Name of setting.
+             * @param value     New value for setting.
+             */
+            void set(const String &setting, const String &value);
+
+            /**
+             * @brief Get a setting value, as a string.
+             *
+             * The setting is located by name, and its value
+             * is converted to a string if necessary.
+             *
+             * Internally, this search the list of settings
+             * for the named setting, and then returns the value of `Setting::as_string`.
+             *
+             * If the setting is not found, an empty string is returned.
+             *
+             * @param setting   Name of setting.
+             * @return Setting's value, as a string; empty string if not found.
+             */
+            String get(const String &setting) const;
+
+            /**
+             * @brief Get a status report.
+             *
+             * This is typically also reported in an info setting. By default this returns an empty
+             * string, i.e. no report.
+             *
+             * @return String containing status report.
+             */
+            virtual String get_status() const
+            {
+                return String();
+            }
+
             static const ExclusiveOptionSetting::names_list_t data_line_names;  //!< Names for each configurable data line; see `settingsMap`.
         protected:
             /**

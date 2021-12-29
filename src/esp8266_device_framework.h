@@ -21,8 +21,11 @@
      * - @ref grmcdorman::device::WifiDisplay "WifiDisplay"
      * - @ref grmcdorman::device::WifiSetup "WifiSetup"
      *
+     * The VindriktningAirQuality class is derived from work by Hypfer's GitHub project, https://github.com/Hypfer/esp8266-vindriktning-particle-sensor.
+     * All work on message deciphering comes from that project.
+     *
      * An additional helper class, @ref grmcdorman::device::ConfigFile "ConfigFile", provides basic JSON configuration
-     * file loading and saving.
+     * file loading and saving for the list of devices.
      *
      * The sketch using the devices must have two strings, a firmware name, and a system identifier.
      * The former is a static `PROGMEM` string identifying the name or purpose of the sketch; the
@@ -41,6 +44,19 @@
      *     device->set_defaults();
      * }
      * @endcode
+     * - Optionally, set some defaults different from the built-in ones: @code{.cpp}
+     * // Device index # 0 is InfoDisplay. It has no relevant settings.
+     * // Device index # 1 is System Details Display. It has no relevant settings.
+     * // Device index # 2 is WiFi display. It has no relevant settings.
+     * // Device index # 3 is the WiFi setup. A default AP and password could be set:
+     * devices[3]->set("ssid", "my access point");
+     * // Note that this will *not* be shown in the web page UI.
+     * devices[3]->set("password", "my password");
+     *
+     * // Device index # 4 is the SHT31-D. Set the default sda to D2, scl to D3.
+     * devices[4]->set("sda", "D2");
+     * devices[4]->set("scl", "D3");
+     * @endcode
      * - load settings: @code{.cpp}
      * config.load(devices);
      * @endcode
@@ -49,7 +65,7 @@
      * {
      *     device->setup();
      *     device->set_devices(devices);
-     *     webServer.add_setting_set(device->name(), device->get_settings());
+     *     webServer.add_setting_set(device->name(), device->identifier(), device->get_settings());
      * }
      * @endcode
      *

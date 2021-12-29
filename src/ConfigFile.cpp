@@ -45,6 +45,10 @@ namespace grmcdorman::device
             for (auto &device : devices)
             {
                 auto deviceJson = (*json)[device->identifier()];
+                if (deviceJson.isNull())
+                {
+                    deviceJson = (*json)[device->name()];
+                }
                 for (auto &setting: device->get_settings())
                 {
                     if (!deviceJson[setting->name()].isNull())
