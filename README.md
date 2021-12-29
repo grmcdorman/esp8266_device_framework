@@ -139,6 +139,44 @@ static void on_save(::grmcdorman::WebSettings &)
 
 There will be some other management around the `WebSettings` class, for things like reset and factory defaults callbacks. See the example for all the details. The example also includes OTA support (which, in theory, could also be a device, but it's simple enough that it's not needed).
 
+<h2>XHR/JavaScript requests</h2>
+The web settings server can be queried for device status via the `/settings/get` URL. The URL requires a query parameter that is the setting set identifier (which will be the device identifier if you follow the code layout above). The response is in JSON.
+
+So, for example, the URL `/settings/get/?tab=system_overview` will return all the settings for the system overview tab:
+```
+{"system_overview":
+    [
+        {"name":"host","value":"VINDRIKTNING-4DB7B3 [192.168.213.45]"},
+        {"name":"station_ssid","value":"mySSID"},
+        {"name":"rssi","value":"◾◾ -74 dBm"},
+        {"name":"softap","value":"VINDRIKTNING-4DB7B3"},
+        {"name":"heap_status","value":"26104 bytes (fragmentation: 8)"},
+        {"name":"uptime","value":"1:06:54"},
+        {"name":"filesystem","value":"LittleFS: total bytes 1024000, used bytes: 24576"},
+        {"name":"device_status","value":"SHT31-D: 19.6 °C, 49.8% R.H.; 0 seconds since last reading.<br>Vindriktning: 8µg/m³, 1 seconds since last reading. <br>MQTT: Last publish succeeded 12 seconds ago."}
+    ]
+}
+```
+You can also request a subset of the items by adding one or more `setting=_name_` parameters. Using the same system overview again, to get just the uptime and system status: `/settings/get/?tab=system_overview&setting=uptime&setting=device_status` would return:
+```
+{"system_overview":
+    [
+        {"name":"uptime","value":"1:06:54"},
+        {"name":"device_status","value":"SHT31-D: 19.6 °C, 49.8% R.H.; 0 seconds since last reading.<br>Vindriktning: 8µg/m³, 1 seconds since last reading. <br>MQTT: Last publish succeeded 12 seconds ago."}
+    ]
+}
+```
+While none of the fields, at the moment, contain _just_ the raw sensor values, it should be easy to modify the code to provide those if needed by your client code.
+
+For example, if you want to consume these values in a PowerShell script:
+```
+$json = (Invoke-WebRequest 'http://my-esp-device/settings/get?tab=system_overview&setting=device_status' ).content | ConvertFrom-Json
+$status = $json.system_overview[0].value
+# Do something with $status
+```
+
+Note that the encoding is UTF-8. However, at the moment the settings server is not including a character set in the response headers.
+
 Screenshots:
 
 * `InfoDisplay`: ![Info display](images/Screenshot-info-panel.png?raw=true "Info Panel")
