@@ -75,7 +75,7 @@ namespace grmcdorman::device
             /**
              * @brief Get a status report.
              *
-             * This is also used for the `last_update` info message, with the exception
+             * This is also used for the `device_status` info message, with the exception
              * of various disabled states.
              *
              * When the MQTT publisher is disabled or nonoperational (e.g. no MQTT server configured),
@@ -149,6 +149,6 @@ namespace grmcdorman::device
             PasswordSetting password;                       //!< If applicable, the MQTT password.
             StringSetting prefix;                           //!< The prefix for topics.
             StringSetting identifier;                       //!< The unique identifier for topics.
-            InfoSettingHtml last_update;                    //!< Output only; last update information.
+            InfoSettingHtml device_status;                    //!< Output only; last update information.
     };
 }

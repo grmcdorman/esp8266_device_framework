@@ -25,7 +25,7 @@ namespace grmcdorman::device
             /**
              * @brief Get a status report.
              *
-             * This is also used for the `last_update` info message, with the exception
+             * This is also used for the `device_status` info message, with the exception
              * of various disabled states.
              *
              * When the SHT31Sensor is disabled or nonoperational,
@@ -57,6 +57,6 @@ namespace grmcdorman::device
             FloatSetting humidityOffset;        //!< Offset applied to humidity readings.
             FloatSetting humidityScale;         //!< Scaling applied to humidity readings.
             UnsignedIntegerSetting readInterval;//!< How often to request a reading.
-            InfoSettingHtml last_update;        //!< Last update
+            InfoSettingHtml device_status;        //!< Last update
     };
 }

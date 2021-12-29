@@ -39,11 +39,11 @@ namespace grmcdorman::device
         password(F("The MQTT password"), F("password")),
         prefix(F("MQTT topic prefix"), F("prefix")),
         identifier(F("MQTT client ID and topic identifier"), F("identifier")),
-        last_update(F("Last update<script>periodicUpdateList.push(\"mqtt_publisher&setting=last_update\");</script>"), F("last_update"))
+        device_status(F("Publish status<script>periodicUpdateList.push(\"mqtt_publisher&setting=device_status\");</script>"), F("device_status"))
     {
         initialize({}, {&notes, &server_address, &server_port, &update_interval, &reconnect_interval,
             &keepalive_interval, &buffer_size,
-            &username, &password, &prefix, &identifier, &last_update, &enabled});
+            &username, &password, &prefix, &identifier, &device_status, &enabled});
         server_port.set(1883);
         update_interval.set(30);
         reconnect_interval.set(60);
@@ -53,33 +53,33 @@ namespace grmcdorman::device
         // Unlike other devices, this is disabled by default.
         set_enabled(false);
 
-        last_update.set_request_callback([this] (const InfoSettingHtml &)
+        device_status.set_request_callback([this] (const InfoSettingHtml &)
         {
             if (!is_enabled())
             {
-                last_update.set(F("MQTT is disabled"));
+                device_status.set(F("MQTT is disabled"));
                 return;
             }
 
             if (mqttClient == nullptr)
             {
-                last_update.set(F("MQTT was disabled at boot; reboot to enable"));
+                device_status.set(F("MQTT was disabled at boot; reboot to enable"));
                 return;
             }
 
             if (server_address.get().isEmpty())
             {
-                last_update.set(F("No server is configured"));
+                device_status.set(F("No server is configured"));
                 return;
             }
 
             if (devices == nullptr)
             {
-                last_update.set(F("No devices attached for publishing"));
+                device_status.set(F("No devices attached for publishing"));
                 return;
             }
 
-            last_update.set(get_status());
+            device_status.set(get_status());
         });
     }
 

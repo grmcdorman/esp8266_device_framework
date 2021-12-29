@@ -41,25 +41,25 @@ namespace grmcdorman::device
         Device(FPSTR(vindriktning_name), FPSTR(vindriktning_name)),
         title(F("<h2>Vindriktning Air Quality Sensor</h2>")),
         serialDataPin(F("Serial In (Data) Connection)"), F("serial_pin"), data_line_names),
-        last_status(F("Last status<script>periodicUpdateList.push(\"vindriktning&setting=last_status\");</script>"), F("last_status")),
+        device_status(F("Sensor status<script>periodicUpdateList.push(\"vindriktning&setting=device_status\");</script>"), F("device_status")),
         sensorSerial()
     {
         static const Vindriktning_Definition vindriktning_definition;
-        initialize({&vindriktning_definition}, {&title, &serialDataPin, &last_status, &enabled});
+        initialize({&vindriktning_definition}, {&title, &serialDataPin, &device_status, &enabled});
 
         serialDataPin.set(dataline_to_index(DEFAULT_RX_PIN));
 
         set_enabled(false);
 
-        last_status.set_request_callback([this] (const InfoSettingHtml &)
+        device_status.set_request_callback([this] (const InfoSettingHtml &)
         {
             if (!is_enabled())
             {
-                last_status.set(F("Vindriktning is disabled"));
+                device_status.set(F("Vindriktning is disabled"));
                 return;
             }
 
-            last_status.set(get_status());
+            device_status.set(get_status());
         });
     }
 

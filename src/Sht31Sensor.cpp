@@ -89,13 +89,13 @@ namespace grmcdorman::device
         humidityOffset(F("Humidity Offset"), F("humidity_offset")),
         humidityScale(F("Humidity Scale Factor"), F("humidity_scale")),
         readInterval(F("Polling interval (seconds)"), F("poll_interval")),
-        last_update(F("Last reading status<script>periodicUpdateList.push(\"sht31_d&setting=last_reading\");</script>"), F("last_reading"))
+        device_status(F("Sensor status<script>periodicUpdateList.push(\"sht31_d&setting=device_status\");</script>"), F("device_status"))
     {
         static const Sht31Device_Temperature_Definition temperature_definition;
         static const Sht31Device_Humidity_Definition humidity_definition;
 
         initialize({&temperature_definition, &humidity_definition}, {&title, &dataPin, &clockPin, &address, &temperatureOffset, &temperatureScale, &humidityOffset, &humidityScale,
-            &readInterval, &last_update, &enabled});
+            &readInterval, &device_status, &enabled});
 
         dataPin.set(dataline_to_index(DEFAULT_SDA));
         clockPin.set(dataline_to_index(DEFAULT_SCL));
@@ -107,21 +107,21 @@ namespace grmcdorman::device
         readInterval.set(statusReadInterval / 1000);
         set_enabled(false);
 
-        last_update.set_request_callback([this] (const InfoSettingHtml &)
+        device_status.set_request_callback([this] (const InfoSettingHtml &)
         {
             if (!is_enabled())
             {
-                last_update.set(F("Sensor is disabled"));
+                device_status.set(F("Sensor is disabled"));
                 return;
             }
 
             if (!available)
             {
-                last_update.set(F("SHT31-D failed to start or is not connected, or was disabled at boot."));
+                device_status.set(F("SHT31-D failed to start or is not connected, or was disabled at boot."));
                 return;
             }
 
-            last_update.set(get_status());
+            device_status.set(get_status());
         });
     }
 

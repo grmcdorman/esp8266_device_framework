@@ -98,7 +98,7 @@ namespace grmcdorman::device
             };
             NoteSetting title;                        /// The title for the device tab.
             ExclusiveOptionSetting serialDataPin;     /// The serial data pin configuration.
-            InfoSettingHtml last_status;              /// The last read status.
+            InfoSettingHtml device_status;              /// The last read status.
 
             ::grmcdorman::SettingInterface::settings_list_t settings;   /// The settings list
 
