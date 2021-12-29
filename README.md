@@ -34,7 +34,7 @@ At the moment, there are seven devices:
  * Boot version
  * SDK version
  * CPU frequencey
-* [`VindriktningAirQuality`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_vindriktning_air_quality.html): This monitors an Ikea Vindriktning air quality sensor. Code inspired by https://github.com/Hypfer/esp8266-vindriktning-particle-sensor. This class is derived from work by Hypfer's GitHub project, https://github.com/Hypfer/esp8266-vindriktning-particle-sensor. All work on message deciphering comes from that project.
+* [`VindriktningAirQuality`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_vindriktning_air_quality.html): This monitors an Ikea Vindriktning air quality sensor. This class is derived from work by Hypfer's GitHub project, https://github.com/Hypfer/esp8266-vindriktning-particle-sensor. All work on message deciphering comes from that project.
 * [`WifiDisplay`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_wifi_display.html):  When connected to a `WebSetting` instance, displays and updates basic WiFi information:
  * Soft IP Address (if applicable)
  * Soft AP MAC address
