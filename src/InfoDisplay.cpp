@@ -6,8 +6,11 @@
 
 namespace grmcdorman::device
 {
-    static const char info_name[] PROGMEM = "System Overview";
-    static const char info_identifier[] PROGMEM = "system_overview";
+    namespace
+    {
+        const char info_name[] PROGMEM = "System Overview";
+        const char info_identifier[] PROGMEM = "system_overview";
+    }
 
     InfoDisplay::InfoDisplay():
         Device(FPSTR(info_name), FPSTR(info_identifier)),
