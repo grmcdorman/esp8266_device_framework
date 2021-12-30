@@ -65,12 +65,13 @@ namespace grmcdorman::device
             InfoSettingHtml firmware_name;                  //!< Firmware identifier, as set by the system.
             InfoSettingHtml compile_datetime;               //!< Compile date and time.
             InfoSettingHtml architecture;                   //!< The platform architecture. This is determined at compile time.
+            InfoSettingHtml device_chip_id;                 //!< The device-specific chip ID.
             InfoSettingHtml flash_chip;                     //!< The flash chip ID.
             InfoSettingHtml last_reset;                     //!< Last reset reason.
             InfoSettingHtml flash_size;                     //!< Flash size.
             InfoSettingHtml real_flash_size;                //!< Real flash size.
             InfoSettingHtml sketch_size;                    //!< Sketch size, total sketch space available.
-            InfoSettingHtml chipid;                         //!< Chip ID (hex).
+            InfoSettingHtml vendor_chip_id;                 //!< Vendor chip ID (hex).
             InfoSettingHtml core_version;                   //!< The core version.
             InfoSettingHtml boot_version;                   //!< The boot version.
             InfoSettingHtml sdk_version;                    //!< SDK version.
