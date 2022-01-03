@@ -42,29 +42,30 @@ namespace grmcdorman::device
     public:
         WebServerRestApi();
         /**
-         * @brief Set defaults.
+         * @brief Set up with the web server.
          *
+         * This must be called after the devices have been added. The
+         * URIs for the devices, and the device list URI, will be registered with
+         * the server.
          *
+         * The URIs added are:
+         * - `/rest/devices/get` to return all devices
+         * - `/rest/device/`_device-id_`/get` to return values for one device
+         *
+         * @param server    Web server to install API on.
+         * @param devices   List of devices to install end-points for. A reference is held to this; this list must exist for the lifetime of this object.
          */
-        void set_defaults();
+        void setup(AsyncWebServer &server, const std::vector<Device *> &devices);
 
-        void setup(AsyncWebServer &server);
-
-        /**
-         * @brief Add the devices to serve
-         *
-         * This must be called before `setup`, so the appropriate APIs
-         * can be constructed.
-         *
-         * @param list  List of devices to manage.
-         */
-        void set_devices(const std::vector<Device *> &list)
-        {
-            devices = &list;
-        }
     private:
+        /**
+         * @brief Handle a device-specific GET.
+         *
+         * This handles the URI `/rest/device/`_device-id_`/get`.
+         *
+         * @param request   Incoming web request.
+         * @param device    Device associated with URI.
+         */
         void handle_on_device_get(AsyncWebServerRequest *request, const Device *device);
-
-        const std::vector<Device *> *devices;
     };
 }

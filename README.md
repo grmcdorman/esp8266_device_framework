@@ -150,7 +150,7 @@ static void on_save(::grmcdorman::WebSettings &)
 There will be some other management around the `WebSettings` class, for things like reset and factory defaults callbacks. See the example for all the details. The example also includes OTA support (which, in theory, could also be a device, but it's simple enough that it's not needed).
 
 <h2>REST API</h2>
-An optional component provides a REST (stateless) web API. The API is created by declaring a [`WebServerRestAPI`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_web_server_rest_api.html) variable, initializing it with an `AsyncWebServer` instance, and adding the devices to create APIs for:
+An optional component provides a REST (stateless) web API. The API is created by declaring a [`WebServerRestAPI`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_web_server_rest_api.html) variable, and initializing it with an `AsyncWebServer` instance and the list of devices:
 
 ```
 static ::grmcdorman::device::WebServerRestApi rest_api;
@@ -159,8 +159,7 @@ void setup()
 {
     // other setup as required
 
-    rest_api.set_devices(devices);
-    rest_api.setup(webServer.get_server()); // or an instance of an AsyncWebServer
+    rest_api.setup(webServer.get_server(), devices); // or an instance of an AsyncWebServer
 }
 ```
 

@@ -33,12 +33,12 @@ namespace grmcdorman::device
     {
     }
 
-    void WebServerRestApi::setup(AsyncWebServer &server)
+    void WebServerRestApi::setup(AsyncWebServer &server, const std::vector<Device *> &devices)
     {
 
         // The filters are required because the AsyncWebServer accepts any path
         // that *starts* with the URI.
-        for (const auto &device: *devices)
+        for (const auto &device: devices)
         {
             String path(F("/rest/device/"));
             path += device->identifier();
@@ -53,11 +53,11 @@ namespace grmcdorman::device
             );
         }
 
-        server.on("/rest/devices/get", HTTP_GET, [this]  (AsyncWebServerRequest *request)
+        server.on("/rest/devices/get", HTTP_GET, [&devices]  (AsyncWebServerRequest *request)
         {
             auto response = new AsyncJsonResponse(true);
             auto & root = response->getRoot();
-            for (const auto &device: *devices)
+            for (const auto &device: devices)
             {
                 root.add(device->identifier());
             }

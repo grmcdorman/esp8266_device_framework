@@ -136,8 +136,7 @@ void setup() {
         webServer.add_setting_set(device->name(), device->identifier(), device->get_settings());
     }
 
-    rest_api.set_devices(devices);
-    rest_api.setup(webServer.get_server());
+    rest_api.setup(webServer.get_server(), devices);
 
     webServer.setup(on_save, on_restart, on_factory_reset);
 

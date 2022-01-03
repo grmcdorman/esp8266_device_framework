@@ -113,8 +113,7 @@ namespace grmcdorman::device
             ToggleSetting invertReading;        //!< Whether to invert the reading.
             UnsignedIntegerSetting readInterval;//!< How often to request a reading.
             uint32_t last_read_millis = 0;      //!< Timestamp of last read.
-            //!< Default read interval. Chosen such that there should be 5 readings per 30 seconds.
-            constexpr static uint32_t statusReadInterval = (30 / 5) * 1000;
+            constexpr static uint32_t statusReadInterval = (30 / 5) * 1000;//!< Default read interval. Chosen such that there should be 5 readings per 30 seconds.
             Accumulator<float, 5> sensor_reading;  //!< Reading.
         private:
             void set_timer();                   //!< Set up ticker timer.
