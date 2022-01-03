@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2021, 2022 G. R. McDorman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 #include "grmcdorman/device/MqttPublisher.h"
 #include "grmcdorman/Setting.h"
@@ -89,12 +110,6 @@ namespace grmcdorman::device
         prefix.set(get_firmware_name());
     }
 
-    bool MqttPublisher::publish(DynamicJsonDocument &)
-    {
-        // This device does not publish.
-        return false;
-    }
-
     void MqttPublisher::setup()
     {
         // Arrange to publish & connect immediately.
@@ -118,49 +133,53 @@ namespace grmcdorman::device
             mqttClient->setServer(server_address.get().c_str(), server_port.get());
             mqttClient->setKeepAlive(keepalive_interval.get());
             mqttClient->setBufferSize(buffer_size.get());
+
+            set_timer();
+
+            // Connect & publish immediately.
+            schedule_function([this] {
+                publish();
+            });
+
         }
+
+
     }
 
     void MqttPublisher::loop()
     {
-        // While it is possible to detect that the settings have changed such
-        // that it's possible to connect, other settings are not applied when changed;
-        // it's more consistent to require reboot for any change at the moment.
-        if (!is_enabled() || server_address.get().isEmpty() || !mqttClient)
-        {
-            return;
-        }
-
-        mqttClient->loop();
-
-        const uint32_t currentMillis = millis();
-
-        // Try to connect before publishing.
-        if (!mqttClient->connected() && currentMillis - previous_connection_attempt_ms >= reconnect_interval.get() * 1000) {
-            previous_connection_attempt_ms = currentMillis;
-            reconnect();
-        }
-
-        last_state = mqttClient->state();
-
-        if (currentMillis - previous_publish_ms >= update_interval.get() * 1000) {
-            // This does not check 'connected'.
-            previous_publish_ms = currentMillis;
-            publish();
-        }
-
-    }
-    void MqttPublisher::reconnect()
-    {
-        if (!is_enabled() && !server_address.get().isEmpty() && !mqttClient)
+        // Setup if enabled and setup() was not called, i.e. either it became enabled, or the server name was set.
+        // This, and the update interval, are the only dynamic setting changes supported. All others require a reboot.
+        if (is_enabled() && !server_address.get().isEmpty() && !mqttClient)
         {
             setup();
         }
 
+        if (current_publish_seconds != update_interval.get())
+        {
+            set_timer();
+        }
+
+        // While it is possible to detect that the settings have changed such
+        // that it's possible to connect, other settings are not applied when changed;
+        // it's more consistent to require reboot for any change at the moment.
+
+        if (mqttClient)
+        {
+            mqttClient->loop();
+            last_state = mqttClient->state();
+        }
+    }
+
+    void MqttPublisher::reconnect()
+    {
+        // Do nothing if not enabled or setup didn't initialize.
         if (!is_enabled() || server_address.get().isEmpty() || !mqttClient)
         {
             return;
         }
+
+        previous_connection_attempt_ms = millis();
 
         bool connected = false;
         if (username.get().isEmpty()) {
@@ -173,6 +192,34 @@ namespace grmcdorman::device
             mqttClient->publish(topicAvailability.c_str(), AVAILABILITY_ONLINE, true);
             publish_auto_config();
         }
+        else
+        {
+            ++retry_count;
+            uint32_t next_interval;
+
+            if (retry_count > CONNECTION_TRIES)
+            {
+                next_interval = reconnect_interval.get();
+                retry_count = 0;
+            }
+            else
+            {
+                next_interval = CONNECTION_RETRY_INTERVAL;
+            }
+
+            connect_ticker.once_scheduled(next_interval, [this] {
+                reconnect();
+            });
+        }
+    }
+
+    void MqttPublisher::set_timer()
+    {
+        current_publish_seconds = update_interval.get();
+        publish_ticker.attach_scheduled(current_publish_seconds, [this]
+        {
+            publish();
+        });
     }
 
     void MqttPublisher::publish_auto_config()
@@ -181,6 +228,9 @@ namespace grmcdorman::device
         {
             return;
         }
+
+        // See https://www.home-assistant.io/integrations/sensor.mqtt for descriptions
+        // of this message.
 
         DynamicJsonDocument device_json(256);
         StaticJsonDocument<64> identifiersDoc;
@@ -193,6 +243,7 @@ namespace grmcdorman::device
         device_json["model"] = publish_model;
         device_json["name"] = identifier.get();
         device_json["sw_version"] =  publish_software_version;
+        device_json["configuration_url"] = F("http://") + WiFi.localIP().toString();
 
         for (auto &device: *devices)
         {
@@ -241,16 +292,38 @@ namespace grmcdorman::device
 
     void MqttPublisher::publish()
     {
-        if (devices == nullptr)
+        if (!is_enabled() ||
+            mqttClient == nullptr ||
+            server_address.get().isEmpty() ||
+            devices == nullptr)
         {
             return;
         }
 
+        if (!mqttClient->connected())
+        {
+            if (!connect_ticker.active())
+            {
+                retry_count = 0;
+                reconnect();
+            }
+
+            if (!mqttClient->connected())
+            {
+                return;
+            }
+        }
+
         tried_publish = true;
+        previous_publish_ms = millis();
         DynamicJsonDocument state_json(1024 * devices->size());
         for (auto &device : *devices)
         {
-            device->publish(state_json);
+            if (device->is_enabled() && !device->get_is_published())
+            {
+                device->publish(state_json);
+                device->set_is_published();
+            }
         }
 
         auto size = measureJson(state_json) + 1;
@@ -261,8 +334,20 @@ namespace grmcdorman::device
         last_publish_failed = !mqttClient->publish(topicState.c_str(), buffer.get(), true);
    }
 
-   String MqttPublisher::get_error_state_message(int state) const
-   {
+    DynamicJsonDocument MqttPublisher::as_json() const
+    {
+        DynamicJsonDocument json(512);
+        static const char enabled_string[] PROGMEM = "enabled";
+        json[FPSTR(enabled_string)] = is_enabled();
+        json[F("connected")] = is_enabled() && mqttClient != nullptr ? mqttClient->connected() : false;
+        json[F("last_connect_attempt_ms")] = millis() - previous_connection_attempt_ms;
+        json[F("last_publish_ms")] = millis() - previous_publish_ms;
+        json[F("publish_succeeded")] = !last_publish_failed;
+        return json;
+    }
+
+    String MqttPublisher::get_error_state_message(int state) const
+    {
         if (mqttClient == nullptr)
         {
             return F("Disabled at boot");

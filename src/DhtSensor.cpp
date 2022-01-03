@@ -22,39 +22,37 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <SHT31.h>
+#include <DHT.h>
+#include <Ticker.h>
 
 #include <algorithm>
 
-#include "grmcdorman/device/Sht31Sensor.h"
+#include "grmcdorman/device/DhtSensor.h"
 #include "grmcdorman/Setting.h"
 
 namespace grmcdorman::device
 {
     namespace {
         // Defaults.
-        constexpr int DEFAULT_ADDRESS = 0x44;       /// Default address. The device can be changed to 0x45 by a jumper.
-        constexpr int DEFAULT_SDA = Device::D5;     /// Default SDA connection.
-        constexpr int DEFAULT_SCL = Device::D6;     /// Default SCL connection.
-        constexpr int address_map[2] = { 0x44, 0x45 };
-        const char sht31_name[] PROGMEM = "SHT31-D";
-        const char sht31_identifier[] PROGMEM = "sht31_d";
-        const ExclusiveOptionSetting::names_list_t address_names{ FPSTR("0x44"), FPSTR("0x45")};
+        constexpr int DEFAULT_SDA = Device::D1;     /// Default SDA connection.
+        const char dht_name[] PROGMEM = "DHT";
+        const char dht_identifier[] PROGMEM = "dht";
+        const ExclusiveOptionSetting::names_list_t dht_models{ FPSTR("DHT11"), FPSTR("DHT22")};
 
-        class Sht31Device_Temperature_Definition: public Device::Definition
+        class dhtDevice_Temperature_Definition: public Device::Definition
         {
             public:
                 virtual const __FlashStringHelper *get_name_suffix() const override
                 {
-                    return F(" SHT31-D Temperature");
+                    return F(" DHT Temperature");
                 }
                 virtual const __FlashStringHelper *get_value_template() const override
                 {
-                    return F("{{value_json.sht31_d.temperature.average}}");
+                    return F("{{value_json.dht.temperature.average}}");
                 }
                 virtual const __FlashStringHelper *get_unique_id_suffix() const override
                 {
-                    return F("_sht31d_temperature");
+                    return F("_dht_temperature");
                 }
                 virtual const __FlashStringHelper *get_unit_of_measurement() const override
                 {
@@ -62,27 +60,27 @@ namespace grmcdorman::device
                 }
                 virtual const __FlashStringHelper *get_json_attributes_template() const override
                 {
-                    return F("{\"last\": \"{{value_json.sht31_d.temperature.last}}\", \"age\": \"{{value_json.temperature.sht31_d.sample_age_ms}}\"}");
+                    return F("{\"last\": \"{{value_json.dht.temperature.last}}\", \"age\": \"{{value_json.dht.temperature.sample_age_ms}}\"}");
                 }
                 virtual const __FlashStringHelper *get_icon() const override
                 {
                     return F("mdi:thermometer");
                 }
         };
-        class Sht31Device_Humidity_Definition: public Device::Definition
+        class dhtDevice_Humidity_Definition: public Device::Definition
         {
             public:
                 virtual const __FlashStringHelper *get_name_suffix() const override
                 {
-                    return F(" SHT31-D Humidity");
+                    return F(" DHT Humidity");
                 }
                 virtual const __FlashStringHelper *get_value_template() const override
                 {
-                    return F("{{value_json.sht31_d.humidity.average}}");
+                    return F("{{value_json.dht.humidity.average}}");
                 }
                 virtual const __FlashStringHelper *get_unique_id_suffix() const override
                 {
-                    return F("_sht31d_humidity");
+                    return F("_dht_humidity");
                 }
                 virtual const __FlashStringHelper *get_unit_of_measurement() const override
                 {
@@ -90,7 +88,7 @@ namespace grmcdorman::device
                 }
                 virtual const __FlashStringHelper *get_json_attributes_template() const override
                 {
-                    return F("{\"last\": \"{{value_json.sht31_d.humidity.last}}\", \"age\": \"{{value_json.sht31_d.humidity.sample_age_ms}}\"}");
+                    return F("{\"last\": \"{{value_json.dht.humidity.last}}\", \"age\": \"{{value_json.dht.humidity.sample_age_ms}}\"}");
                 }
                 virtual const __FlashStringHelper *get_icon() const override
                 {
@@ -99,28 +97,27 @@ namespace grmcdorman::device
         };
     }
 
-    Sht31Sensor::Sht31Sensor():
-        AbstractTemperaturePressureSensor(FPSTR(sht31_name), FPSTR(sht31_identifier)),
-        title(F("<h2>SHT31-D Temperature and Humidity Sensor</h2>")),
+    DhtSensor::DhtSensor():
+        AbstractTemperaturePressureSensor(FPSTR(dht_name), FPSTR(dht_identifier)),
+        title(F("<h2>DHT11/DHT22 Temperature and Humidity Sensor</h2>")),
         dataPin(F("SDA (Data) Connection"), F("sda"), data_line_names),
-        clockPin(F("SCL (Clock) Connection"), F("scl"), data_line_names),
-        address(F("Sensor address"), F("address"), address_names),
+        dhtModel(F("DHT model"), F("dht_model"), dht_models),
         temperatureOffset(F("Temperature offset"), F("temperature_offset")),
         temperatureScale(F("Temperature Scale Factor"), F("temperature_scale")),
         humidityOffset(F("Humidity Offset"), F("humidity_offset")),
         humidityScale(F("Humidity Scale Factor"), F("humidity_scale")),
         readInterval(F("Polling interval (seconds)"), F("poll_interval")),
-        device_status(F("Sensor status<script>periodicUpdateList.push(\"sht31_d&setting=device_status\");</script>"), F("device_status"))
+        device_status(F("Sensor status<script>periodicUpdateList.push(\"dht&setting=device_status\");</script>"), F("device_status"))
     {
-        static const Sht31Device_Temperature_Definition temperature_definition;
-        static const Sht31Device_Humidity_Definition humidity_definition;
+        static const dhtDevice_Temperature_Definition temperature_definition;
+        static const dhtDevice_Humidity_Definition humidity_definition;
 
-        initialize({&temperature_definition, &humidity_definition}, {&title, &dataPin, &clockPin, &address, &temperatureOffset, &temperatureScale, &humidityOffset, &humidityScale,
+        initialize({&temperature_definition, &humidity_definition}, {&title, &dataPin, &dhtModel, &temperatureOffset, &temperatureScale, &humidityOffset, &humidityScale,
             &readInterval, &device_status, &enabled});
 
         dataPin.set(dataline_to_index(DEFAULT_SDA));
-        clockPin.set(dataline_to_index(DEFAULT_SCL));
-        address.set(0);
+        dhtModel.set(0);    // DHT11
+
         temperatureOffset.set(0);
         temperatureScale.set(1);
         humidityOffset.set(0);
@@ -136,65 +133,70 @@ namespace grmcdorman::device
                 return;
             }
 
-            if (!available)
-            {
-                device_status.set(F("SHT31-D failed to start or is not connected, or was disabled at boot."));
-                return;
-            }
-
             device_status.set(get_status());
         });
     }
 
-    void Sht31Sensor::setup()
+    void DhtSensor::setup()
     {
         if (!is_enabled())
         {
             return;
         }
 
-        Wire.begin();
-        if (!sht.begin(address_map[address.get()], index_to_dataline(dataPin.get()), index_to_dataline(clockPin.get())))
-        {
-            return;
-        }
-        Wire.setClock(100000);
-        if (!sht.isConnected())
-        {
-            return;
-        }
+        dht.reset(dhtModel.get() == 0 ? static_cast<DHT *>(new DHT11()) : static_cast<DHT *>(new DHT22()));
 
-        available = true;
+        reset_dht();
         set_timer();
-        sht.requestData();                // request for next sample
-        requested = true;
     }
 
-    void Sht31Sensor::loop()
+    void DhtSensor::reset_dht()
     {
-        if (!available || !is_enabled())
+        dht->setPin(index_to_dataline(dataPin.get()));
+        dht->onData([this](float new_humidity, float new_temperature)
         {
+            last_status = 0;
+            schedule_function([this, new_humidity, new_temperature]() {
+                last_read_millis = millis();
+                temperature.new_reading(new_temperature* temperatureScale.get() + temperatureOffset.get());
+                humidity.new_reading(new_humidity* humidityScale.get() + humidityOffset.get());
+                clear_is_published();
+                requested = false;
+            });
+        });
+        dht->onError([this] (uint8_t status)
+        {
+            last_status = status;
+            requested = false;
+        });
+    }
+
+    void DhtSensor::loop()
+    {
+        if (!is_enabled())
+        {
+            if (dht)
+            {
+                ticker.detach();
+                dht.reset();
+            }
             return;
         }
 
-        if (requested && sht.dataReady())
+        if (!dht)
         {
-            bool success  = sht.readData();   // default = true = fast
-            if (success)
-            {
-                last_read_millis = millis();
-                temperature.new_reading(sht.getTemperature() * temperatureScale.get() + temperatureOffset.get());
-                humidity.new_reading(sht.getHumidity() * humidityScale.get() + humidityOffset.get());
-                clear_is_published();
-            }
+            setup();
+        }
 
-            requested = false;
+        if (current_polling_seconds != readInterval.get())
+        {
+            set_timer();
         }
     }
 
-    String Sht31Sensor::get_status() const
+    String DhtSensor::get_status() const
     {
-        if (!is_enabled() || !available)
+        if (!is_enabled())
         {
             return String();
         }
@@ -202,7 +204,48 @@ namespace grmcdorman::device
         String message;
         message.reserve(150);
 
-        if (temperature.has_accumulation())
+        if (last_status != 0)
+        {
+            // DHT has a `getError method,
+            // which returns a string based on
+            // the internal status. Unfortunately:
+            // a) This method has no way of translating a previous status.
+            // b) The current status value is inaccessable.
+            // The values in the switch statement below correspond to
+            // the values in the DHT code. It is not clear what they mean.
+            switch (last_status)
+            {
+                case 0:
+                    // No error.
+                    break;
+                case 1:
+                    message += F("DHT read timeout");
+                    break;
+                case 2:
+                    message += F("DHT responded with a NACK");
+                    break;
+                case 3:
+                    message += F("DHT data was invalid");
+                    break;
+                case 4:
+                    message += F("DHT data had an invalid checksum");
+                    break;
+                default:
+                    message += F("DHT reported an unknown error code: ");
+                    message += last_status;
+            }
+            if (temperature.get_last_reading() != INVALID_READING)
+            {
+                message += F(";");
+            }
+            else
+            {
+                message += '.';
+                return message;
+            }
+        }
+
+        if (temperature.get_last_reading() != INVALID_READING)
         {
             char float_str[64];
             dtostrf(temperature.get_last_reading(), 1, 1, float_str);
@@ -223,17 +266,17 @@ namespace grmcdorman::device
         return message;
     }
 
-    void Sht31Sensor::set_timer()
+    void DhtSensor::set_timer()
     {
         current_polling_seconds = readInterval.get();
-        ticker.attach_scheduled(current_polling_seconds, [this] {
+        // A `detach` isn't necessary, this will automatically detach if required.
+        ticker.attach_scheduled(current_polling_seconds, [this]
+        {
             if (!requested)
             {
-                statusReadPreviousMillis = millis();
-                sht.requestData();                // request for next sample
                 requested = true;
+                dht->read();
             }
         });
-
     }
 }

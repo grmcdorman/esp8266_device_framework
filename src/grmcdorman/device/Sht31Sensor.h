@@ -1,9 +1,31 @@
+/*
+ * Copyright (c) 2021, 2022 G. R. McDorman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #pragma once
 
 #include <SHT31.h>
+#include <Ticker.h>
 
-#include "grmcdorman/device/Device.h"
-#include "grmcdorman/Setting.h"
+#include "grmcdorman/device/AbstractTemperaturePressureSensor.h"
 
 namespace grmcdorman::device
 {
@@ -13,14 +35,13 @@ namespace grmcdorman::device
      * The device provides humidity and temperature. Readings are published
      * as the average of all readings made since the last publish.
      */
-    class Sht31Sensor: public Device
+    class Sht31Sensor: public AbstractTemperaturePressureSensor
     {
         public:
             Sht31Sensor();
 
             void setup() override;
             void loop() override;
-            bool publish(DynamicJsonDocument &json) override;
 
             /**
              * @brief Get a status report.
@@ -36,12 +57,12 @@ namespace grmcdorman::device
             virtual String get_status() const;
 
         private:
+            void set_timer();                   //<! Set up ticker timer.
+
             SHT31 sht;
-            float temperature_sum = 0.0;        //!< The sum of all temperature readings since the last publish.
-            float humidity_sum = 0.0;           //!< The sum of all humidity readings since the last publish.
-            uint32_t reading_count = 0;         //!< The number of reads performed since the last publish.
-            float last_temperature = -273;      //!< Last read temperature. Initialized to 0 Kelvin, which we are rather unlikely to see.
-            float last_humidity = 0.0;          //!< Last read humidity.
+            Ticker ticker;                      //<! Ticker to handle readings.
+            uint32_t current_polling_seconds = 0;//<! Current polling interval.
+
             uint32_t last_read_millis;          //!< Timestamp of last read.
             bool requested = false;             //!< Whether a reading was requested.
             bool available = false;             //!< Whether the device is available.

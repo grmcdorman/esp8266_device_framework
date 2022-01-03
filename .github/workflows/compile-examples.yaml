@@ -48,9 +48,11 @@ jobs:
             - name: ArduinoJson
             - name: PubSubClient
             - name: SHT31
+            - name: LiquidCrystal_I2C
             - source-url: https://github.com/me-no-dev/ESPAsyncWebServer.git
             - source-url: https://github.com/me-no-dev/ESPAsyncTCP.git
             - source-url: https://github.com/grmcdorman/esp8266_web_settings.git
+            - source-url: https://github.com/bertmelis/DHT
           sketch-paths: |
             # Compile these sketches for all boards
             - examples
