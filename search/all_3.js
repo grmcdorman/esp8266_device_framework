@@ -1,17 +1,19 @@
 var searchData=
 [
-  ['get_0',['get',['../classgrmcdorman_1_1device_1_1_device.html#a21c41e0012ab1b8c9618f7ffbc18dbf1',1,'grmcdorman::device::Device']]],
-  ['get_5fconfigured_5flocal_5fhostname_1',['get_configured_local_hostname',['../classgrmcdorman_1_1device_1_1_wifi_setup.html#a4303f275d30349cec570578650fc1d79',1,'grmcdorman::device::WifiSetup']]],
-  ['get_5fdefinitions_2',['get_definitions',['../classgrmcdorman_1_1device_1_1_device.html#a152b8c0fb0de33fd87ff9e2c4a93194e',1,'grmcdorman::device::Device']]],
-  ['get_5ffirmware_5fname_3',['get_firmware_name',['../classgrmcdorman_1_1device_1_1_device.html#af89dab66876f868ae1168a3e23d7084e',1,'grmcdorman::device::Device']]],
-  ['get_5ficon_4',['get_icon',['../classgrmcdorman_1_1device_1_1_device_1_1_definition.html#ae6f01ea481be52d7c6a12862ecc74d3a',1,'grmcdorman::device::Device::Definition']]],
-  ['get_5fjson_5fattributes_5ftemplate_5',['get_json_attributes_template',['../classgrmcdorman_1_1device_1_1_device_1_1_definition.html#a3d0045cb1cc154ac63765566ea40bcdd',1,'grmcdorman::device::Device::Definition']]],
-  ['get_5fname_5fsuffix_6',['get_name_suffix',['../classgrmcdorman_1_1device_1_1_device_1_1_definition.html#aa43e6122378fcd1f6377cada7b956b23',1,'grmcdorman::device::Device::Definition']]],
-  ['get_5fpath_7',['get_path',['../classgrmcdorman_1_1device_1_1_config_file.html#a79ccc51ae46b45898c36ed0620b2d5e3',1,'grmcdorman::device::ConfigFile']]],
-  ['get_5fsettings_8',['get_settings',['../classgrmcdorman_1_1device_1_1_device.html#a8c9ff0e85d1f1f533589ed77f8d67be2',1,'grmcdorman::device::Device']]],
-  ['get_5fstatus_9',['get_status',['../classgrmcdorman_1_1device_1_1_device.html#ae4c4769395fe90f513834dbb3f64e1d4',1,'grmcdorman::device::Device::get_status()'],['../classgrmcdorman_1_1device_1_1_vindriktning_air_quality.html#a9b5c76027c6450e68ca6b4f68ff4af5f',1,'grmcdorman::device::VindriktningAirQuality::get_status()'],['../classgrmcdorman_1_1device_1_1_sht31_sensor.html#abc1ceb41d09cec34a46298b759075726',1,'grmcdorman::device::Sht31Sensor::get_status()'],['../classgrmcdorman_1_1device_1_1_mqtt_publisher.html#a83e780b7cd12d006fff60e709a566d3f',1,'grmcdorman::device::MqttPublisher::get_status()'],['../classgrmcdorman_1_1device_1_1_info_display.html#aae67f74f984da9332b20f288d3699622',1,'grmcdorman::device::InfoDisplay::get_status()']]],
-  ['get_5fsystem_5fidentifier_10',['get_system_identifier',['../classgrmcdorman_1_1device_1_1_device.html#a92b4519ec9af374084420db93feba679',1,'grmcdorman::device::Device']]],
-  ['get_5funique_5fid_5fsuffix_11',['get_unique_id_suffix',['../classgrmcdorman_1_1device_1_1_device_1_1_definition.html#acce0641185a9f00a8945a780c3bbdb69',1,'grmcdorman::device::Device::Definition']]],
-  ['get_5funit_5fof_5fmeasurement_12',['get_unit_of_measurement',['../classgrmcdorman_1_1device_1_1_device_1_1_definition.html#a006d0a492126e106ea5262b626e3239d',1,'grmcdorman::device::Device::Definition']]],
-  ['get_5fvalue_5ftemplate_13',['get_value_template',['../classgrmcdorman_1_1device_1_1_device_1_1_definition.html#a1917c3f458fe2921d6786447c1063a30',1,'grmcdorman::device::Device::Definition']]]
+  ['d0_0',['D0',['../classgrmcdorman_1_1device_1_1_device.html#a3b18559560832aba1cf27738f0edeb68',1,'grmcdorman::device::Device']]],
+  ['d1_1',['D1',['../classgrmcdorman_1_1device_1_1_device.html#a48da959fbb9c7138738ee0bfc4b4cb8e',1,'grmcdorman::device::Device']]],
+  ['d2_2',['D2',['../classgrmcdorman_1_1device_1_1_device.html#a6e96ad92c964c1b300b88b7ceb1bd5c5',1,'grmcdorman::device::Device']]],
+  ['d3_3',['D3',['../classgrmcdorman_1_1device_1_1_device.html#ad286eed5a2e1999df7e41062434cd724',1,'grmcdorman::device::Device']]],
+  ['d4_4',['D4',['../classgrmcdorman_1_1device_1_1_device.html#ad729b8a25c46003fa7879e466673a685',1,'grmcdorman::device::Device']]],
+  ['d5_5',['D5',['../classgrmcdorman_1_1device_1_1_device.html#aaeebac7f604d47e07e6eb96b132fcaa9',1,'grmcdorman::device::Device']]],
+  ['d6_6',['D6',['../classgrmcdorman_1_1device_1_1_device.html#aedf4b034452e10c6cdd8a1c99c70bd19',1,'grmcdorman::device::Device']]],
+  ['d7_7',['D7',['../classgrmcdorman_1_1device_1_1_device.html#a843b90009cfd097fb60c99dbf5192646',1,'grmcdorman::device::Device']]],
+  ['d8_8',['D8',['../classgrmcdorman_1_1device_1_1_device.html#ae8bc8a575f85a28950b1316213c41399',1,'grmcdorman::device::Device']]],
+  ['data_5fline_5fnames_9',['data_line_names',['../classgrmcdorman_1_1device_1_1_device.html#a49df407c9730f756bc8a5ce16b5ce35e',1,'grmcdorman::device::Device']]],
+  ['dataline_5fto_5findex_10',['dataline_to_index',['../classgrmcdorman_1_1device_1_1_device.html#a82ecfed14ef57fa916cc13d6ab8fdcea',1,'grmcdorman::device::Device']]],
+  ['definition_11',['Definition',['../classgrmcdorman_1_1device_1_1_device_1_1_definition.html',1,'grmcdorman::device::Device']]],
+  ['definition_5flist_5ft_12',['definition_list_t',['../classgrmcdorman_1_1device_1_1_device.html#afef88a0d84a883cbbefdf8328f2fa337',1,'grmcdorman::device::Device']]],
+  ['device_13',['Device',['../classgrmcdorman_1_1device_1_1_device.html#a3c56fab4a3fb829135433fef3d4814c2',1,'grmcdorman::device::Device::Device()'],['../classgrmcdorman_1_1device_1_1_device.html',1,'grmcdorman::device::Device']]],
+  ['device_5fstatus_14',['device_status',['../classgrmcdorman_1_1device_1_1_basic_analog.html#a3cb6e71d4836257b186b60ee453b6660',1,'grmcdorman::device::BasicAnalog::device_status()'],['../classgrmcdorman_1_1device_1_1_thermistor_sensor.html#aa405ad25848b1ed3d6a460bfd143199f',1,'grmcdorman::device::ThermistorSensor::device_status()']]],
+  ['dhtsensor_15',['DhtSensor',['../classgrmcdorman_1_1device_1_1_dht_sensor.html',1,'grmcdorman::device']]]
 ];

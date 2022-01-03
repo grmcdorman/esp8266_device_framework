@@ -99,9 +99,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab851054d647330dd8b09de3b49567601"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_wifi_display.html#ab851054d647330dd8b09de3b49567601">loop</a> () override</td></tr>
 <tr class="memdesc:ab851054d647330dd8b09de3b49567601"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loop.  <a href="classgrmcdorman_1_1device_1_1_wifi_display.html#ab851054d647330dd8b09de3b49567601">More...</a><br /></td></tr>
 <tr class="separator:ab851054d647330dd8b09de3b49567601"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a107d1924fbf21d4b8e045c9ca1ad31ed"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_wifi_display.html#a107d1924fbf21d4b8e045c9ca1ad31ed">publish</a> (DynamicJsonDocument &amp;json) override</td></tr>
-<tr class="memdesc:a107d1924fbf21d4b8e045c9ca1ad31ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Publish to MQTT.  <a href="classgrmcdorman_1_1device_1_1_wifi_display.html#a107d1924fbf21d4b8e045c9ca1ad31ed">More...</a><br /></td></tr>
-<tr class="separator:a107d1924fbf21d4b8e045c9ca1ad31ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ea8104a3d36176a101765099223936f"><td class="memItemLeft" align="right" valign="top">DynamicJsonDocument&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_wifi_display.html#a3ea8104a3d36176a101765099223936f">as_json</a> () const override</td></tr>
+<tr class="memdesc:a3ea8104a3d36176a101765099223936f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the values, as a JSON document.  <a href="classgrmcdorman_1_1device_1_1_wifi_display.html#a3ea8104a3d36176a101765099223936f">More...</a><br /></td></tr>
+<tr class="separator:a3ea8104a3d36176a101765099223936f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classgrmcdorman_1_1device_1_1_device"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classgrmcdorman_1_1device_1_1_device')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classgrmcdorman_1_1device_1_1_device.html">grmcdorman::device::Device</a></td></tr>
 <tr class="memitem:a3c56fab4a3fb829135433fef3d4814c2 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_device.html#a3c56fab4a3fb829135433fef3d4814c2">Device</a> (const __FlashStringHelper *device_name, const __FlashStringHelper *device_identifier)</td></tr>
 <tr class="memdesc:a3c56fab4a3fb829135433fef3d4814c2 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="classgrmcdorman_1_1device_1_1_device.html" title="The generic device interface.">Device</a> object.  <a href="classgrmcdorman_1_1device_1_1_device.html#a3c56fab4a3fb829135433fef3d4814c2">More...</a><br /></td></tr>
@@ -122,6 +122,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~Device</b> ()</td
 <tr class="memitem:a4600f035e5a4204a51d7540c8cd4fd40 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_device.html#a4600f035e5a4204a51d7540c8cd4fd40">set_devices</a> (const std::vector&lt; <a class="el" href="classgrmcdorman_1_1device_1_1_device.html">Device</a> * &gt; &amp;list)</td></tr>
 <tr class="memdesc:a4600f035e5a4204a51d7540c8cd4fd40 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="mdescLeft">&#160;</td><td class="mdescRight">For devices that support it, add devices to manage.  <a href="classgrmcdorman_1_1device_1_1_device.html#a4600f035e5a4204a51d7540c8cd4fd40">More...</a><br /></td></tr>
 <tr class="separator:a4600f035e5a4204a51d7540c8cd4fd40 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08e0fd3e0689fad65efe93aeccb8b7bc inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_device.html#a08e0fd3e0689fad65efe93aeccb8b7bc">publish</a> (DynamicJsonDocument &amp;json) const</td></tr>
+<tr class="memdesc:a08e0fd3e0689fad65efe93aeccb8b7bc inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="mdescLeft">&#160;</td><td class="mdescRight">Publish the value and attributes.  <a href="classgrmcdorman_1_1device_1_1_device.html#a08e0fd3e0689fad65efe93aeccb8b7bc">More...</a><br /></td></tr>
+<tr class="separator:a08e0fd3e0689fad65efe93aeccb8b7bc inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a152b8c0fb0de33fd87ff9e2c4a93194e inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classgrmcdorman_1_1device_1_1_device.html#afef88a0d84a883cbbefdf8328f2fa337">definition_list_t</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_device.html#a152b8c0fb0de33fd87ff9e2c4a93194e">get_definitions</a> () const</td></tr>
 <tr class="memdesc:a152b8c0fb0de33fd87ff9e2c4a93194e inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the definitions list.  <a href="classgrmcdorman_1_1device_1_1_device.html#a152b8c0fb0de33fd87ff9e2c4a93194e">More...</a><br /></td></tr>
 <tr class="separator:a152b8c0fb0de33fd87ff9e2c4a93194e inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,6 +146,16 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~Device</b> ()</td
 <tr class="memitem:ae4c4769395fe90f513834dbb3f64e1d4 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memItemLeft" align="right" valign="top">virtual String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_device.html#ae4c4769395fe90f513834dbb3f64e1d4">get_status</a> () const</td></tr>
 <tr class="memdesc:ae4c4769395fe90f513834dbb3f64e1d4 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a status report.  <a href="classgrmcdorman_1_1device_1_1_device.html#ae4c4769395fe90f513834dbb3f64e1d4">More...</a><br /></td></tr>
 <tr class="separator:ae4c4769395fe90f513834dbb3f64e1d4 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc92f1f35134d23498f703dea550e405 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_device.html#abc92f1f35134d23498f703dea550e405">get_is_published</a> () const</td></tr>
+<tr class="memdesc:abc92f1f35134d23498f703dea550e405 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get whether the device readings have been published.  <a href="classgrmcdorman_1_1device_1_1_device.html#abc92f1f35134d23498f703dea550e405">More...</a><br /></td></tr>
+<tr class="separator:abc92f1f35134d23498f703dea550e405 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebdcc6d4abebd453b0b36929c731e98d inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgrmcdorman_1_1device_1_1_device.html#aebdcc6d4abebd453b0b36929c731e98d">set_is_published</a> ()</td></tr>
+<tr class="memdesc:aebdcc6d4abebd453b0b36929c731e98d inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the device as having published readings.  <a href="classgrmcdorman_1_1device_1_1_device.html#aebdcc6d4abebd453b0b36929c731e98d">More...</a><br /></td></tr>
+<tr class="separator:aebdcc6d4abebd453b0b36929c731e98d inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14fe4997df02d63a7ce58e70218e2ed4 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memItemLeft" align="right" valign="top"><a id="a14fe4997df02d63a7ce58e70218e2ed4" name="a14fe4997df02d63a7ce58e70218e2ed4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clear_is_published</b> ()</td></tr>
+<tr class="memdesc:a14fe4997df02d63a7ce58e70218e2ed4 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the device as not having published readings. <br /></td></tr>
+<tr class="separator:a14fe4997df02d63a7ce58e70218e2ed4 inherit pub_methods_classgrmcdorman_1_1device_1_1_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -228,6 +241,37 @@ ToggleSetting&#160;</td><td class="memItemRight" valign="bottom"><b>enabled</b><
 <p >It does not publish data and has no configuration.</p>
 <p >All fields in this panel update periodically. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a3ea8104a3d36176a101765099223936f" name="a3ea8104a3d36176a101765099223936f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ea8104a3d36176a101765099223936f">&#9670;&nbsp;</a></span>as_json()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">DynamicJsonDocument grmcdorman::device::WifiDisplay::as_json </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the values, as a JSON document. </p>
+<p >The structure is identical to the document created inside <code>publish</code>.</p>
+<dl class="section return"><dt>Returns</dt><dd>DynamicJsonDocument </dd></dl>
+
+<p>Reimplemented from <a class="el" href="classgrmcdorman_1_1device_1_1_device.html#a54b65687dd8fdfc97f99eeecdddf132a">grmcdorman::device::Device</a>.</p>
+
+</div>
+</div>
 <a id="ab851054d647330dd8b09de3b49567601" name="ab851054d647330dd8b09de3b49567601"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab851054d647330dd8b09de3b49567601">&#9670;&nbsp;</a></span>loop()</h2>
 
@@ -255,43 +299,6 @@ ToggleSetting&#160;</td><td class="memItemRight" valign="bottom"><b>enabled</b><
 <p >This class has no loop operations. </p>
 
 <p>Implements <a class="el" href="classgrmcdorman_1_1device_1_1_device.html#a50b82526d1beb3be550b49c4bc0c9361">grmcdorman::device::Device</a>.</p>
-
-</div>
-</div>
-<a id="a107d1924fbf21d4b8e045c9ca1ad31ed" name="a107d1924fbf21d4b8e045c9ca1ad31ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a107d1924fbf21d4b8e045c9ca1ad31ed">&#9670;&nbsp;</a></span>publish()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool grmcdorman::device::WifiDisplay::publish </td>
-          <td>(</td>
-          <td class="paramtype">DynamicJsonDocument &amp;&#160;</td>
-          <td class="paramname"><em>json</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Publish to MQTT. </p>
-<p >This class does not publish to MQTT. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">json</td><td>Not used. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>false</code> No data published. </dd></dl>
-
-<p>Implements <a class="el" href="classgrmcdorman_1_1device_1_1_device.html#af8d089a63223d990edf5239604042411">grmcdorman::device::Device</a>.</p>
 
 </div>
 </div>

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['wifidisplay_0',['WifiDisplay',['../classgrmcdorman_1_1device_1_1_wifi_display.html#ac3e51751bfc042f5d9aa0bd77c197355',1,'grmcdorman::device::WifiDisplay']]]
+  ['name_0',['name',['../classgrmcdorman_1_1device_1_1_device.html#a206316c188d52e39117a30395cc8534d',1,'grmcdorman::device::Device']]],
+  ['new_5freading_1',['new_reading',['../classgrmcdorman_1_1device_1_1_accumulator.html#a02b620ab8ca13416dd3c81cbff01dc2b',1,'grmcdorman::device::Accumulator']]]
 ];
