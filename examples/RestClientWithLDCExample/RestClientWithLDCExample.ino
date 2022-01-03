@@ -184,7 +184,7 @@ void loop()
     web_settings.loop();
 
 
-    if (digitalRead(D1) == HIGH)
+    if (digitalRead(5) == HIGH)
     {
         lcd.backlight();
         backlight_timer.attach_scheduled(30, backlight_off);
