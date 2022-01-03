@@ -49,8 +49,8 @@ jobs:
             - name: PubSubClient
             - name: SHT31
             # LiquidCrystal I2C for ESP8266
-            - source-url: https://github.com/lucasmaziero/LiquidCrystal_I2C.git
-              verision: 1.1
+            - source-url: https://github.com/johnrickman/LiquidCrystal_I2C
+              verision: 1.1.3
             - source-url: https://github.com/me-no-dev/ESPAsyncWebServer.git
             - source-url: https://github.com/me-no-dev/ESPAsyncTCP.git
             - source-url: https://github.com/grmcdorman/esp8266_web_settings.git
