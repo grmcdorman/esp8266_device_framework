@@ -110,16 +110,16 @@ namespace grmcdorman::device
             virtual float transform_raw_reading(int reading) = 0;
             FloatSetting scale;                 //!< Offset.
             FloatSetting offset;                //!< Scaling.
-            ToggleSetting invertReading;        //<! Whether to invert the reading.
+            ToggleSetting invertReading;        //!< Whether to invert the reading.
             UnsignedIntegerSetting readInterval;//!< How often to request a reading.
             uint32_t last_read_millis = 0;      //!< Timestamp of last read.
             //!< Default read interval. Chosen such that there should be 5 readings per 30 seconds.
             constexpr static uint32_t statusReadInterval = (30 / 5) * 1000;
             Accumulator<float, 5> sensor_reading;  //!< Reading.
         private:
-            void set_timer();                   //<! Set up ticker timer.
-            Ticker ticker;                      //<! Ticker to handle readings.
-            uint32_t current_polling_seconds = 0;//<! Current polling interval.
+            void set_timer();                   //!< Set up ticker timer.
+            Ticker ticker;                      //!< Ticker to handle readings.
+            uint32_t current_polling_seconds = 0;//!< Current polling interval.
             float last_raw_value = 0;           //!< Last raw value.
     };
 }

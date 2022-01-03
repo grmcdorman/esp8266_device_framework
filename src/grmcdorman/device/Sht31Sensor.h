@@ -57,11 +57,11 @@ namespace grmcdorman::device
             virtual String get_status() const;
 
         private:
-            void set_timer();                   //<! Set up ticker timer.
+            void set_timer();                   //!< Set up ticker timer.
 
             SHT31 sht;
-            Ticker ticker;                      //<! Ticker to handle readings.
-            uint32_t current_polling_seconds = 0;//<! Current polling interval.
+            Ticker ticker;                      //!< Ticker to handle readings.
+            uint32_t current_polling_seconds = 0;//!< Current polling interval.
 
             uint32_t last_read_millis;          //!< Timestamp of last read.
             bool requested = false;             //!< Whether a reading was requested.

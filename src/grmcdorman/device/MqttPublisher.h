@@ -160,8 +160,8 @@ namespace grmcdorman::device
              */
             void set_timer();
 
-            const __FlashStringHelper *publish_manufacturer;    //<! The manufacturer from the constructor.
-            const __FlashStringHelper *publish_model;           //<! The model from the constructor.
+            const __FlashStringHelper *publish_manufacturer;    //!< The manufacturer from the constructor.
+            const __FlashStringHelper *publish_model;           //!< The model from the constructor.
             const __FlashStringHelper *publish_software_version;//!< The sofware version from the constructor.
 
             const std::vector<Device *> *devices = nullptr; //!< The list of attached devices that will be published.
@@ -175,7 +175,7 @@ namespace grmcdorman::device
             bool tried_publish = false;                     //!< Set to true on the first publish attempt.
             bool last_publish_failed = false;               //!< Success/fail for last data publish.
             int last_state = -1;                            //!< Last known MQTT state.
-            uint32_t current_publish_seconds = 0;           //<! Current publish interval.
+            uint32_t current_publish_seconds = 0;           //!< Current publish interval.
 
             String topicAvailability;                       //!< The availability topic string. Used when connecting.
             String topicState;                              //!< The state topic string. Used when connecting.

@@ -76,10 +76,10 @@ namespace grmcdorman::device
             void reset_dht();                           //!< Reset DHT on the first read request following an error.
 
             std::unique_ptr<DHT> dht;                   //!< Ether DHT11 or DHT22, depending on configuration.
-            Ticker ticker;                              //<! Ticker used to schedule readings.
-            int last_status = 0;                        //<! Last reported error status.
-            uint32_t last_read_millis = 0;              //<! Last read millis().
-            uint32_t current_polling_seconds = 0;       //<! Current polling interval.
+            Ticker ticker;                              //!< Ticker used to schedule readings.
+            int last_status = 0;                        //!< Last reported error status.
+            uint32_t last_read_millis = 0;              //!< Last read millis().
+            uint32_t current_polling_seconds = 0;       //!< Current polling interval.
             bool requested = false;                     //!< Whether a reading was requested.
             uint32_t request_previous_mills = 0;        //!< The time since the last read request.
             NoteSetting title;                          //!< Device tab title.

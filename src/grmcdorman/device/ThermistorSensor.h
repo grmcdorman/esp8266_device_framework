@@ -102,8 +102,8 @@ namespace grmcdorman::device
              * @return Temperature, in degrees C.
              */
             virtual float transform_raw_reading(int reading) override;
-            float inverse_thermal_index;        //<! The inverse of thermal index of the thermistor.
-            float inverse_t1;                   //<! The inverse of the T1 temperature of the thermistor.
+            float inverse_thermal_index;        //!< The inverse of thermal index of the thermistor.
+            float inverse_t1;                   //!< The inverse of the T1 temperature of the thermistor.
             NoteSetting title;                  //!< Device tab title.
             InfoSettingHtml device_status;      //!< Last update
     };
