@@ -42,6 +42,10 @@
     {
         "name": "external-repo",
         "version": "https://github.com/grmcdorman/esp8266_web_settings.git"
+    },
+    {
+        "name": "external-repo",
+        "version": "https://github.com/bertmelis/DHT"
     }
   ]
 }

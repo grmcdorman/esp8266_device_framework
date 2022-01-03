@@ -1,3 +1,25 @@
+/*
+ * Copyright (c) 2021, 2022 G. R. McDorman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #include "grmcdorman/device/VindriktningAirQuality.h"
 
 namespace grmcdorman::device
@@ -16,7 +38,7 @@ namespace grmcdorman::device
                 }
                 virtual const __FlashStringHelper *get_value_template() const override
                 {
-                    return F("{{value_json.pm25}}");
+                    return F("{{value_json.vindriktning.pm25.average}}");
                 }
                 virtual const __FlashStringHelper *get_unique_id_suffix() const override
                 {
@@ -28,7 +50,7 @@ namespace grmcdorman::device
                 }
                 virtual const __FlashStringHelper *get_json_attributes_template() const override
                 {
-                    return nullptr;
+                    return F("{\"last\": \"{{value_json.vindriktning.pm25.last}}\", \"age\": \"{{value_json.vindriktning.pm25.sample_age_ms}}\"}");
                 }
                 virtual const __FlashStringHelper *get_icon() const override
                 {
@@ -38,7 +60,7 @@ namespace grmcdorman::device
     }
 
     VindriktningAirQuality::VindriktningAirQuality():
-        Device(FPSTR(vindriktning_name), FPSTR(vindriktning_name)),
+        Device(FPSTR(vindriktning_name), FPSTR(vindriktning_identifier)),
         title(F("<h2>Vindriktning Air Quality Sensor</h2>")),
         serialDataPin(F("Serial In (Data) Connection)"), F("serial_pin"), data_line_names),
         device_status(F("Sensor status<script>periodicUpdateList.push(\"vindriktning&setting=device_status\");</script>"), F("device_status")),
@@ -65,7 +87,7 @@ namespace grmcdorman::device
 
     void VindriktningAirQuality::setup()
     {
-        if (enabled.get())
+        if (is_enabled())
         {
             sensorSerial.begin(UART_SPEED, SWSERIAL_8N1, index_to_dataline(serialDataPin.get()), -1, false, buffer_size);
         }
@@ -73,7 +95,7 @@ namespace grmcdorman::device
 
     void VindriktningAirQuality::loop()
     {
-        if (!enabled.get())
+        if (!is_enabled())
         {
             return;
         }
@@ -147,25 +169,35 @@ namespace grmcdorman::device
          *         MSB  DF 3     DF 4  LSB
          * uint16_t = xxxxxxxx xxxxxxxx
          */
-        last_pm25 = (data[5] << 8) | data[6];
-        pm25_sum += last_pm25;
-        ++pm25_count;
+        auto new_pm25 = (data[5] << 8) | data[6];
+        pm25.new_reading(new_pm25);
         last_read_millis = millis();
         last_read_state = State::READ;
+        clear_is_published();
     }
 
-    bool VindriktningAirQuality::publish(DynamicJsonDocument &json)
+    bool VindriktningAirQuality::publish(DynamicJsonDocument &json) const
     {
-        if (!enabled.get() || pm25_count == 0)
+        if (!is_enabled())
         {
             return false;
         }
 
-        json[F("pm25")] = pm25_sum / pm25_count;
-        pm25_sum = 0;
-        pm25_count = 0;
+        json[FPSTR(vindriktning_identifier)] = as_json();
 
         return true;
+    }
+
+    DynamicJsonDocument VindriktningAirQuality::as_json() const
+    {
+        static const char enabled_string[] PROGMEM = "enabled";
+        static const char pm25_string[] PROGMEM = "pm25";
+        DynamicJsonDocument json(512);
+
+        json[FPSTR(enabled_string)] = is_enabled();
+        json[FPSTR(pm25_string)] = pm25.as_json();
+
+        return json;
     }
 
     String VindriktningAirQuality::get_status() const
@@ -174,7 +206,7 @@ namespace grmcdorman::device
         state_message.reserve(256);
         if (last_read_millis > 0)
         {
-            state_message += last_pm25;
+            state_message += pm25.get_last_reading();
             state_message += F("µg/m³, ");
             state_message += (millis() - last_read_millis) / 1000;
             state_message += F(" seconds since last reading. ");

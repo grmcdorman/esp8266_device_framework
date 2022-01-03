@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2021, 2022 G. R. McDorman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 #include <Arduino.h>
 #include <LittleFS.h>
@@ -63,5 +84,35 @@ namespace grmcdorman::device
         itoa(ESP.getCpuFreqMHz(), frequency_string, 10);
         strcat_P(frequency_string, mhz);
         cpu_frequency.set(frequency_string);
+    }
+
+    DynamicJsonDocument SystemDetailsDisplay::as_json() const
+    {
+        DynamicJsonDocument json(128 * get_settings().size());
+
+        static const char enabled_string[] PROGMEM = "enabled";
+
+        json[FPSTR(enabled_string)] = is_enabled();
+        // Most values can simply be retrieved from settings. Exceptions are
+        // sketch size and cpu frequency.
+        for (const auto &setting: get_settings())
+        {
+            if (setting->send_to_ui() && setting != &enabled && setting != &sketch_size && setting != &cpu_frequency)
+            {
+                // This will invoke the request callback, which will update the contents as a side effect.
+                json[setting->name()] = setting->as_string();
+            }
+        }
+
+        static const char sketch_string[] PROGMEM = "sketch";
+        static const char used_string[] PROGMEM = "size";
+        static const char total_string[] PROGMEM = "total";
+        DynamicJsonDocument sketch_json(512);
+        sketch_json[FPSTR(used_string)] = ESP.getSketchSize();
+        sketch_json[FPSTR(total_string)] = ESP.getFreeSketchSpace() + ESP.getSketchSize();
+        json[FPSTR(sketch_string)] = std::move(sketch_json);
+        json[cpu_frequency.name()] = ESP.getCpuFreqMHz();
+
+        return json;
     }
 }

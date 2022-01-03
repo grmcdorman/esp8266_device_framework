@@ -1,3 +1,25 @@
+/*
+ * Copyright (c) 2021, 2022 G. R. McDorman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #pragma once
 
 #include <WString.h>
@@ -243,7 +265,24 @@ namespace grmcdorman::device
              * @param[in,out] json JSON to receive the device values and attributes.
              * @return `true` if a value to be published was added; `false` otherwise.
              */
-            virtual bool publish(DynamicJsonDocument &json) = 0;
+            virtual bool publish(DynamicJsonDocument &json) const
+            {
+                return false;
+            }
+
+
+            /**
+             * @brief Get the values, as a JSON document.
+             *
+             * The structure is identical to the document created inside `publish`.
+             *
+             * @return DynamicJsonDocument
+             */
+            virtual DynamicJsonDocument as_json() const
+            {
+                // Return a null document.
+                return DynamicJsonDocument(8);
+            }
 
             /**
              * @brief The type containing a list of Definition objects.
@@ -343,6 +382,37 @@ namespace grmcdorman::device
                 return String();
             }
 
+            /**
+             * @brief Get whether the device readings have been published.
+             *
+             * The device is considered to be published if there are no readings
+             * since the last publish, or since system start.
+             * @return true     The device readings have been published.
+             * @return false    The device readings have not been published.
+             */
+            virtual bool get_is_published() const
+            {
+                return is_published;
+            }
+
+            /**
+             * @brief Set the device as having published readings.
+             *
+             * This should be called when the device is published.
+             */
+            void set_is_published()
+            {
+                is_published = true;
+            }
+
+            /**
+             * @brief Set the device as not having published readings.
+             *
+             */
+            void clear_is_published()
+            {
+                is_published = false;
+            }
             static const ExclusiveOptionSetting::names_list_t data_line_names;  //!< Names for each configurable data line; see `settingsMap`.
         protected:
             /**
@@ -397,6 +467,7 @@ namespace grmcdorman::device
         private:
             const __FlashStringHelper *device_name;                     //!< The device name, from the constructor.
             const __FlashStringHelper *device_identifier;               //!< The device identifier, from the constructor.
+            bool is_published = true;                                   //!< Whether this device has published since last reading. Initially `true` until first reading.
 
             static const __FlashStringHelper *firmware_name;            //!< The unique firmware prefix.
             static String system_identifier;                            //!< The unique system identifier.

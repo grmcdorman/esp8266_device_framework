@@ -1,3 +1,25 @@
+/*
+ * Copyright (c) 2021, 2022 G. R. McDorman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #include <ESP8266WiFi.h>
 
 #include "grmcdorman/device/WifiSetup.h"
@@ -5,8 +27,10 @@
 namespace grmcdorman::device
 {
     namespace {
-        auto SSID_STRING_LOWER = FPSTR("ssid");
-        auto WIFI_STRING_LOWER = FPSTR("wifi");
+        const char ssid_string_lower[] PROGMEM = "ssid";
+        const char wifi_string_lower[] PROGMEM = "wifi";
+        auto SSID_STRING_LOWER = FPSTR(ssid_string_lower);
+        auto WIFI_STRING_LOWER = FPSTR(wifi_string_lower);
         const char wifi_name[] PROGMEM = "WiFi";
         const char wifi_identifier[] PROGMEM = "wifi_setup";
         class WifiSetupDevice_Definition: public Device::Definition
@@ -199,21 +223,29 @@ namespace grmcdorman::device
         }
     }
 
-    bool WifiSetup::publish(DynamicJsonDocument &json)
+    bool WifiSetup::publish(DynamicJsonDocument &json) const
     {
         if (!publish_rssi.get())
         {
             return false;
         }
 
-        DynamicJsonDocument wifiJson(512);
-
-        wifiJson[SSID_STRING_LOWER] = WiFi.SSID();
-        wifiJson[F("ip")] = WiFi.localIP().toString();
-        wifiJson[F("rssi")] = WiFi.RSSI();
-
-        json[WIFI_STRING_LOWER] = wifiJson.as<JsonObject>();
+        // This device is unique in not using the device identifier here.
+        json[WIFI_STRING_LOWER] = as_json();
 
         return true;
+    }
+
+    DynamicJsonDocument WifiSetup::as_json() const
+    {
+        static const char enabled_string[] PROGMEM = "enabled";
+        DynamicJsonDocument json(512);
+
+        json[FPSTR(enabled_string)] = is_enabled();
+        json[SSID_STRING_LOWER] = WiFi.SSID();
+        json[F("ip")] = WiFi.localIP().toString();
+        json[F("rssi")] = WiFi.RSSI();
+
+        return json;
     }
 }

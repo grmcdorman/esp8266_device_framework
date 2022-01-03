@@ -1,3 +1,25 @@
+/*
+ * Copyright (c) 2021, 2022 G. R. McDorman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #pragma once
 
 #include "grmcdorman/device/Device.h"
@@ -36,8 +58,8 @@ namespace grmcdorman::device
             void set_defaults() override;
             void setup() override;
             void loop() override;
-            bool publish(DynamicJsonDocument &json) override;
-
+            bool publish(DynamicJsonDocument &json) const override;
+            DynamicJsonDocument as_json() const override;
             /**
              * @brief Get the local host name.
              *
@@ -49,7 +71,18 @@ namespace grmcdorman::device
             {
                 return hostname.get();
             }
-
+            /**
+             * @brief Get whether the device readings have been published.
+             *
+             * The WiFiSetup device always returns the current RSSI value. It
+             * is not averaged and as such should always be considered as
+             * "not published".
+             * @return false    Always publish RSSI.
+             */
+            bool get_is_published() const override
+            {
+                return false;
+            }
         private:
             void connect_to_ap();                           //!< Try to connect to the configured AP.
             StringSetting hostname;                         //!< The local host name configuration.

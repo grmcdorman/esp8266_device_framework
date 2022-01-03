@@ -48,9 +48,14 @@ jobs:
             - name: ArduinoJson
             - name: PubSubClient
             - name: SHT31
+            # LiquidCrystal I2C for ESP8266
+            - source-url: https://github.com/johnrickman/LiquidCrystal_I2C.git
+              version: 1.1.3
             - source-url: https://github.com/me-no-dev/ESPAsyncWebServer.git
             - source-url: https://github.com/me-no-dev/ESPAsyncTCP.git
             - source-url: https://github.com/grmcdorman/esp8266_web_settings.git
+            - source-url: https://github.com/bertmelis/DHT.git
+              version: 1.0.1
           sketch-paths: |
             # Compile these sketches for all boards
             - examples

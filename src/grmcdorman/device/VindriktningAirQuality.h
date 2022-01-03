@@ -1,9 +1,31 @@
+/*
+ * Copyright (c) 2021, 2022 G. R. McDorman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #pragma once
 
 #include <SoftwareSerial.h>
 
 #include "grmcdorman/device/Device.h"
-#include "grmcdorman/Setting.h"
+#include "grmcdorman/device/Accumulator.h"
 
 namespace grmcdorman::device
 {
@@ -42,7 +64,8 @@ namespace grmcdorman::device
 
             void setup() override;
             void loop() override;
-            bool publish(DynamicJsonDocument &json) override;
+            bool publish(DynamicJsonDocument &json) const override;
+            DynamicJsonDocument as_json() const override;
 
             /**
              * @brief Get a status report.
@@ -56,6 +79,18 @@ namespace grmcdorman::device
              */
             virtual String get_status() const;
 
+            /**
+             * @brief Get the last PM 2.5 reading.
+             *
+             * Note that this is not the value published to MQTT.
+             *
+             * This may be zero if never read.
+             * @return PM 2.5 reading.
+             */
+            uint16_t get_pm25() const
+            {
+                return pm25.get_last_reading();
+            }
         private:
             static constexpr uint16_t vindriktning_message_size = 20;
             /**
@@ -92,29 +127,27 @@ namespace grmcdorman::device
              */
             enum class State
             {
-                NEVER_READ,         /// Never read anything.
-                NO_HEADER_FOUND,    /// Last read didn't find a header.
-                READ                /// Last read succeeded.
+                NEVER_READ,         //!< Never read anything.
+                NO_HEADER_FOUND,    //!< Last read didn't find a header.
+                READ                //!< Last read succeeded.
             };
-            NoteSetting title;                        /// The title for the device tab.
-            ExclusiveOptionSetting serialDataPin;     /// The serial data pin configuration.
-            InfoSettingHtml device_status;              /// The last read status.
+            NoteSetting title;                        //!< The title for the device tab.
+            ExclusiveOptionSetting serialDataPin;     //!< The serial data pin configuration.
+            InfoSettingHtml device_status;             //!< The last read status.
 
-            ::grmcdorman::SettingInterface::settings_list_t settings;   /// The settings list
+            ::grmcdorman::SettingInterface::settings_list_t settings;   //!< The settings list
 
-            SoftwareSerial sensorSerial;                    /// The software serial reader, used to read from the device.
-            uint32_t last_read_millis = 0;                  /// The time of the last read.
-            State last_read_state = State::NEVER_READ;      /// The last read state.
-            static constexpr uint16_t buffer_size = 2 * vindriktning_message_size;    /// The buffer size. Do not set this high; high values need a lot of heap.
-            uint8_t buffer[buffer_size];                    /// Read buffer.
-            uint32_t rxBufIdx = 0;                          /// The current read index in the buffer.
+            SoftwareSerial sensorSerial;                    //!< The software serial reader, used to read from the device.
+            uint32_t last_read_millis = 0;                  //!< The time of the last read.
+            State last_read_state = State::NEVER_READ;      //!< The last read state.
+            static constexpr uint16_t buffer_size = 2 * vindriktning_message_size;    //!< The buffer size. Do not set this high; high values need a lot of heap.
+            uint8_t buffer[buffer_size];                    //!< Read buffer.
+            uint32_t rxBufIdx = 0;                          //!< The current read index in the buffer.
 
-            static constexpr uint8_t HEADER_BYTE_0 = 0x16;  /// The value in the first byte of the message header.
-            static constexpr uint8_t HEADER_BYTE_1 = 0x11;  /// The value in the second byte of the message header.
-            static constexpr uint8_t HEADER_BYTE_2 = 0x0B;  /// The value in the third byte of the message header.
+            static constexpr uint8_t HEADER_BYTE_0 = 0x16;  //!< The value in the first byte of the message header.
+            static constexpr uint8_t HEADER_BYTE_1 = 0x11;  //!< The value in the second byte of the message header.
+            static constexpr uint8_t HEADER_BYTE_2 = 0x0B;  //!< The value in the third byte of the message header.
 
-            uint16_t last_pm25 = 0;
-            uint32_t pm25_sum = 0;                          /// The sum of all PM 2.5 readings since the last publish.
-            uint32_t pm25_count = 0;                        /// The number of PM 2.5 readings since the last publish.
+            Accumulator<uint32_t, 5> pm25;                  //!< The PM 2.5 readings.
     };
 }

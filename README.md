@@ -11,7 +11,11 @@ In addition, devices can easily publish to a MQTT server, provided the `MqttPubl
 
 The example provided in this repository is the actual working sketch I use for my own Ikea Vindriktning air quality sensor; I have added a SHT31-D to the setup. You may notice from the screen shots that a temperature offset is applied; it appears that either the sensor reads high by two to three degrees Celcius or the heat generated inside the Vindriktning case throws off the reading by that amount.
 
-At the moment, there are seven devices:
+Values reported by devices are the moving average of the last five readings; the most recent reading is also available.
+
+At the moment, there are ten devices:
+* [`BasicAnalog`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_basic_analog.html): A basic analog sensor, reading from the ESP8266 `A0` input. The reading is reported as floating-point; the reading can be transformed with a mulitpler and scale to give, for example, volts.
+* [`DhtSensor`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_dht_sensor.html): A DHT11 or DHT22 sensor, using Bert Melis' interrupt-driven DHT library (https://github.com/bertmelis/DHT).
 * [`InfoDisplay`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_info_display.html): When connected to a `WebSetting` instance, displays and updates basic system information:
   * Host name and IP address.
   * Connected access point
@@ -36,7 +40,8 @@ At the moment, there are seven devices:
   * Core version
   * Boot version
   * SDK version
-  * CPU frequencey
+  * CPU frequency
+* [`ThermistorSensor`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_thermistor_sensor.html): Reads analog values from the ESP8266 `A0` input and converts them to a temperature reading using the standard equations. The thermistor's thermal index, or Beta, and reference temperatures must be supplied; there are also some assumptions about the circuit wiring. See the documentation for the class, or the source, for details.
 * [`VindriktningAirQuality`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_vindriktning_air_quality.html): This monitors an Ikea Vindriktning air quality sensor. This class is derived from work by Hypfer's GitHub project, https://github.com/Hypfer/esp8266-vindriktning-particle-sensor. All work on message deciphering comes from that project.
 * [`WifiDisplay`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_wifi_display.html):  When connected to a `WebSetting` instance, displays and updates basic WiFi information:
   * Soft IP Address (if applicable)
@@ -69,14 +74,19 @@ Usage is generally pretty simple:
 
 * Create a vector (`std::vector<Device *>`) of devices, containing each of the devices you want to use, and declare a `WebSettings` and a `Config`:
 ```
-static std::vector<::grmcdorman::device::Device *> devices{
-    new ::grmcdorman::device::InfoDisplay,
-    new ::grmcdorman::device::SystemDetailsDisplay,
-    new ::grmcdorman::device::WifiDisplay,
-    new ::grmcdorman::device::WifiSetup,
-    new ::grmcdorman::device::Sht31Sensor,
-    new ::grmcdorman::device::VindriktningAirQuality,
-    new ::grmcdorman::device::MqttPublisher(FPSTR(manufacturer), FPSTR(model), FPSTR(software_version))
+static ::grmcdorman::device::InfoDisplay info_display;
+static ::grmcdorman::device::SystemDetailsDisplay system_details_display;
+static ::grmcdorman::device::WifiDisplay wifi_display;
+static ::grmcdorman::device::WifiSetup wifi_setup;
+static ::grmcdorman::device::Sht31Sensor sht31_sensor;
+static ::grmcdorman::device::VindriktningAirQuality vindriktning_air_quality;static std::vector<::grmcdorman::device::Device *> devices{
+    &info_display,
+    &system_details_display,
+    &wifi_display,
+    &wifi_setup,
+    &sht31_sensor,
+    &vindriktning_air_quality,
+    &mqtt_publisher
 };
 static grmcdorman::device::ConfigFile config;
 static grmcdorman::WebSettings webServer;
@@ -91,17 +101,14 @@ static grmcdorman::WebSettings webServer;
 ```
 * Optionally, set some defaults different from the built-in ones:
 ```
-    // Device index # 0 is InfoDisplay. It has no relevant settings.
-    // Device index # 1 is System Details Display. It has no relevant settings.
-    // Device index # 2 is WiFi display. It has no relevant settings.
-    // Device index # 3 is the WiFi setup. A default AP and password could be set:
-    devices[3]->set("ssid", "my access point");
+    // Set a default SSID and password.
+    wifi_setup.set("ssid", "my access point");
     // Note that this will *not* be shown in the web page UI.
-    devices[3]->set("password", "my password");
+    wifi_setup.set("password", "my password");
 
-    // Device index # 4 is the SHT31-D. Set the default sda to D2, scl to D3.
-    devices[4]->set("sda", "D2");
-    devices[4]->set("scl", "D3");
+    // Set the default sda to D2, scl to D3.
+    sht31_sensor.set("sda", "D2");
+    sht31_sensor.set("scl", "D3");
 ```
 * Load and apply settings:
 ```
@@ -142,8 +149,26 @@ static void on_save(::grmcdorman::WebSettings &)
 
 There will be some other management around the `WebSettings` class, for things like reset and factory defaults callbacks. See the example for all the details. The example also includes OTA support (which, in theory, could also be a device, but it's simple enough that it's not needed).
 
+<h2>REST API</h2>
+An optional component provides a REST (stateless) web API. The API is created by declaring a [`WebServerRestAPI`](https://grmcdorman.github.io/esp8266_device_framework/classgrmcdorman_1_1device_1_1_web_server_rest_api.html) variable, and initializing it with an `AsyncWebServer` instance and the list of devices:
+
+```
+static ::grmcdorman::device::WebServerRestApi rest_api;
+// Declare devices as usual
+void setup()
+{
+    // other setup as required
+
+    rest_api.setup(webServer.get_server(), devices); // or an instance of an AsyncWebServer
+}
+```
+
+That's it. Then the URLs `http://_your-server-name_/devices/get` and, for each device, `http://_your-server-ip_/device/_device-id_/get` to get the state for a device will be available.
+
+See the `RestApiExample.ino` for a complete working example, and `RestClientWithLDCExample.ino` for a working client that will display to a 2 row/16 column I2C LCD display.
+
 <h2>XHR/JavaScript requests</h2>
-The web settings server can be queried for device status via the `/settings/get` URL. The URL requires a query parameter that is the setting set identifier (which will be the device identifier if you follow the code layout above). The response is in JSON.
+The web settings server can be queried for device status via the `/settings/get` URL. The URL requires a query parameter that is the setting set identifier (which will be the device identifier if you follow the code layout above). The response is in JSON, and contains the text for the updatable UI fields.
 
 So, for example, the URL `/settings/get/?tab=system_overview` will return all the settings for the system overview tab:
 ```

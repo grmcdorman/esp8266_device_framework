@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2021, 2022 G. R. McDorman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 #include <ESP8266WiFi.h>
 #include <LittleFS.h>
@@ -195,5 +216,45 @@ namespace grmcdorman::device
         {
             device_status.set(String());
         }
+    }
+
+    DynamicJsonDocument InfoDisplay::as_json() const
+    {
+        DynamicJsonDocument json(1024);
+
+        static const char enabled_string[] PROGMEM = "enabled";
+        static const char host_string[] PROGMEM = "host";
+        static const char ip_string[] PROGMEM = "ip";
+        static const char station_ssid_string[] PROGMEM = "station_ssid";
+        static const char rssi_string[] PROGMEM = "rssi";
+        static const char softap_string[] PROGMEM = "softap";
+        static const char heap_string[] PROGMEM = "heap";
+        static const char free_string[] PROGMEM = "free";
+        static const char fragmentation_string[] PROGMEM = "fragmentation";
+        static const char uptime_string[] PROGMEM = "uptime_seconds";
+        static const char filesystem_string[] PROGMEM = "littlefs";
+        static const char used_string[] PROGMEM = "used";
+
+        json[FPSTR(enabled_string)] = is_enabled();
+        json[FPSTR(host_string)] = WiFi.hostname();
+        json[FPSTR(ip_string)] = WiFi.localIP().toString();
+        json[FPSTR(station_ssid_string)] = WiFi.SSID();
+        json[FPSTR(softap_string)] = WiFi.softAPSSID();
+        DynamicJsonDocument heap_status(128);
+        heap_status[FPSTR(free_string)] = ESP.getFreeHeap();
+        heap_status[FPSTR(fragmentation_string)] = ESP.getHeapFragmentation();
+        json[FPSTR(heap_string)] = std::move(heap_status);
+        json[FPSTR(uptime_string)] = millis() / 1000;
+        // JSON does not support 64-bit.
+        fs::FSInfo info;
+        if (LittleFS.info(info))
+        {
+            DynamicJsonDocument fs_status(128);
+            fs_status[FPSTR(free_string)] = info.totalBytes - info.usedBytes;
+            fs_status[FPSTR(used_string)] = info.usedBytes;
+            json[FPSTR(filesystem_string)] = std::move(fs_status);
+        }
+
+        return json;
     }
 }
