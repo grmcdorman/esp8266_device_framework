@@ -51,7 +51,7 @@
 #include <DNSServer.h>
 #include <LittleFS.h>
 
-#include <grmcdorman/WebSettings.h>
+#include <esp8266_web_settings.h>
 
 // Forward declarations
 static void wifi_setup();
@@ -133,7 +133,7 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("Begin LCD REST Client Demo");
-    Wire.begin(D2, D3);
+    Wire.begin(D1, D2);
     lcd.init();
     lcd.backlight();
 

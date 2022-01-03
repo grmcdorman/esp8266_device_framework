@@ -31,6 +31,7 @@
  * marcoschwartz/LiquidCrystal_I2C to be installed with your library manager.
  */
 
+#include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ArduinoOTA.h>
 #include <ESP8266WiFi.h>
@@ -124,8 +125,8 @@ void setup() {
     Serial.println(identifier);
     Serial.flush();
 
-    // Set up the LCD.
-    Wire.begin(D2, D3);
+    // Set up the LCD, I2C on D1/D2.
+    Wire.begin(D1, D2);
     lcd.init();
 
     // While it is not essential to have this in PROGMEM, this
