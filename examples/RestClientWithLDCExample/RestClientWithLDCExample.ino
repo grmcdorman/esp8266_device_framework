@@ -133,7 +133,8 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("Begin LCD REST Client Demo");
-    Wire.begin(D1, D2);
+    // Begin Wire on D2, D3
+    Wire.begin(4, 0);
     lcd.init();
     lcd.backlight();
 
@@ -142,7 +143,7 @@ void setup()
     lcd.createChar(1, superscript3);
     lcd.createChar(2, mu);
     lcd.createChar(3, degree);
-    pinMode(D1, INPUT);
+    pinMode(5, INPUT);
 
     auto config = LoadConfig();
     if (config)

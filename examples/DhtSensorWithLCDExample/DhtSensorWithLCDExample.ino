@@ -126,7 +126,7 @@ void setup() {
     Serial.flush();
 
     // Set up the LCD, I2C on D1/D2.
-    Wire.begin(D1, D2);
+    Wire.begin(5, 4);
     lcd.init();
 
     // While it is not essential to have this in PROGMEM, this
