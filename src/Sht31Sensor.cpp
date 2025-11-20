@@ -62,7 +62,7 @@ namespace grmcdorman::device
                 }
                 virtual const __FlashStringHelper *get_json_attributes_template() const override
                 {
-                    return F("{\"last\": \"{{value_json.sht31_d.temperature.last}}\", \"age\": \"{{value_json.temperature.sht31_d.sample_age_ms}}\"}");
+                    return F("{\"last\": \"{{value_json.sht31_d.temperature.last}}\", \"age\": \"{{value_json.sht31_d.temperature.sample_age_ms}}\"}");
                 }
                 virtual const __FlashStringHelper *get_icon() const override
                 {

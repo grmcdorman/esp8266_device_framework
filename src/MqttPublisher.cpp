@@ -189,6 +189,7 @@ namespace grmcdorman::device
         }
 
         if (connected) {
+            connect_ticker.detach();
             mqttClient->publish(topicAvailability.c_str(), AVAILABILITY_ONLINE, true);
             publish_auto_config();
         }

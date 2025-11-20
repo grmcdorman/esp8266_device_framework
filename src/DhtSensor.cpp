@@ -206,13 +206,12 @@ namespace grmcdorman::device
 
         if (last_status != 0)
         {
-            // DHT has a `getError method,
+            // DHT has a `getError` method,
             // which returns a string based on
             // the internal status. Unfortunately:
             // a) This method has no way of translating a previous status.
             // b) The current status value is inaccessable.
-            // The values in the switch statement below correspond to
-            // the values in the DHT code. It is not clear what they mean.
+            // c) The message string is, at best, obscure.
             switch (last_status)
             {
                 case 0:

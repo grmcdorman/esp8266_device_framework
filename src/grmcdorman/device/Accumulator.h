@@ -83,7 +83,7 @@ namespace grmcdorman::device
             float get_current_average() const
             {
                 uint8_t count = std::min(data_read_first, average_points);
-                return count == 0 ? unset_value : std::accumulate(&last_reading_set[0], &last_reading_set[count], zero_value) / static_cast<float>(count);
+                return count == 0 ? static_cast<float>(unset_value) : std::accumulate(&last_reading_set[0], &last_reading_set[count], zero_value) / static_cast<float>(count);
             }
             /**
              * @brief Record a new reading.
