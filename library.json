@@ -40,12 +40,12 @@
       "version": "*"
     },
     {
-        "name": "external-repo-web-settings",
+        "name": "esp8266_web_settings",
         "version": "https://github.com/grmcdorman/esp8266_web_settings.git"
     },
     {
-        "name": "external-repo-DHT",
-        "version": "https://github.com/bertmelis/DHT"
+        "name": "DHT",
+        "version": "https://github.com/bertmelis/DHT#1.0.1"
     }
   ]
 }
