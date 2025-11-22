@@ -19,15 +19,15 @@
   "frameworks": "arduino",
   "platforms": "esp8266",
   "dependencies": [
-      {
+    {
         "owner": "bblanchon",
         "name": "ArduinoJson",
         "version": "^6.18.3"
     },
     {
-        "owner": "me-no-dev",
-        "name": "ESPAsyncWebServer",
-        "version": "*"
+        "owner": "esphome",
+        "name": "ESPAsyncWebServer-esphome",
+        "version": "^2.1.0"
     },
     {
       "owner": "knolleary",
@@ -40,11 +40,11 @@
       "version": "*"
     },
     {
-        "name": "external-repo",
+        "name": "external-repo-web-settings",
         "version": "https://github.com/grmcdorman/esp8266_web_settings.git"
     },
     {
-        "name": "external-repo",
+        "name": "external-repo-DHT",
         "version": "https://github.com/bertmelis/DHT"
     }
   ]
