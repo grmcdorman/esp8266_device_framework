@@ -226,7 +226,6 @@ namespace grmcdorman::device
         static const char host_string[] PROGMEM = "host";
         static const char ip_string[] PROGMEM = "ip";
         static const char station_ssid_string[] PROGMEM = "station_ssid";
-        static const char rssi_string[] PROGMEM = "rssi";
         static const char softap_string[] PROGMEM = "softap";
         static const char heap_string[] PROGMEM = "heap";
         static const char free_string[] PROGMEM = "free";

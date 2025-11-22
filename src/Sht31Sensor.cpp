@@ -153,20 +153,21 @@ namespace grmcdorman::device
             return;
         }
 
-        Wire.begin();
-        if (!sht.begin(address_map[address.get()], index_to_dataline(dataPin.get()), index_to_dataline(clockPin.get())))
+        wire.begin(index_to_dataline(dataPin.get()), index_to_dataline(clockPin.get()));
+        sht = new SHT31(address_map[address.get()], &wire);
+        if (!sht->begin())
         {
             return;
         }
-        Wire.setClock(100000);
-        if (!sht.isConnected())
+        wire.setClock(100000);
+        if (!sht->isConnected())
         {
             return;
         }
 
         available = true;
         set_timer();
-        sht.requestData();                // request for next sample
+        sht->requestData();                // request for next sample
         requested = true;
     }
 
@@ -177,14 +178,14 @@ namespace grmcdorman::device
             return;
         }
 
-        if (requested && sht.dataReady())
+        if (requested && sht->dataReady())
         {
-            bool success  = sht.readData();   // default = true = fast
+            bool success  = sht->readData();   // default = true = fast
             if (success)
             {
                 last_read_millis = millis();
-                temperature.new_reading(sht.getTemperature() * temperatureScale.get() + temperatureOffset.get());
-                humidity.new_reading(sht.getHumidity() * humidityScale.get() + humidityOffset.get());
+                temperature.new_reading(sht->getTemperature() * temperatureScale.get() + temperatureOffset.get());
+                humidity.new_reading(sht->getHumidity() * humidityScale.get() + humidityOffset.get());
                 clear_is_published();
             }
 
@@ -230,7 +231,7 @@ namespace grmcdorman::device
             if (!requested)
             {
                 statusReadPreviousMillis = millis();
-                sht.requestData();                // request for next sample
+                sht->requestData();                // request for next sample
                 requested = true;
             }
         });

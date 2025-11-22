@@ -34,6 +34,9 @@ namespace grmcdorman::device
      *
      * The device provides humidity and temperature. Readings are published
      * as the average of all readings made since the last publish.
+     *
+     * NOTE: This deliberately leaks a SHT31 instance; this
+     * is to minimize overhead.
      */
     class Sht31Sensor: public AbstractTemperaturePressureSensor
     {
@@ -59,7 +62,8 @@ namespace grmcdorman::device
         private:
             void set_timer();                   //!< Set up ticker timer.
 
-            SHT31 sht;
+            TwoWire wire;
+            SHT31 *sht;
             Ticker ticker;                      //!< Ticker to handle readings.
             uint32_t current_polling_seconds = 0;//!< Current polling interval.
 
